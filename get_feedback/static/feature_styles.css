@@ -1,0 +1,25 @@
+div.answers
+{
+  font-size:0.6em;
+}
+
+div.hovering {
+    display: none;
+}
+
+a:hover + div.hovering {
+    display: block;
+}
+
+.summary
+{
+    background:#eee;
+    padding:4px;
+    margin:4px;
+    border-radius:5px;
+}
+
+.yellow
+{
+    color:#fa0;
+}

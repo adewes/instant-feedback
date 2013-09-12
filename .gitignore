@@ -1,0 +1,6 @@
+*.pyc
+*~
+*#
+tmp*
+*.png
+venv/*

@@ -1,0 +1,19 @@
+{%if admin %}
+<a rel="popover" 
+    data-content="<div class=answers>
+        <ul>
+        {% for value in summary %}
+            <li><strong>{{value.1}}</strong>: {{value.0}} </li>
+        {%endfor%}
+        </ul>
+    </div>
+    " 
+    data-html="true" data-trigger="hover" data-original-title="Answers" class="summary">{%if summary %}(see answers){%else%}(no answers){%endif%}
+</a>
+{%else%}
+<div id="input_{{id}}" style="display:inline;">
+    <form id="vote_form_{{id}}" action="/update_response/input/{{id}}" method="POST" onsubmit="update_response('input','{{id}}',document.getElementById('vote_form_{{id}}').elements['value'].value);return false;" >
+    <input {%if width%}style="width:{{width}}px;"{%endif%} name="value" value="{%if value%}{{value}}{%else%}{{default}}{%endif%}" onchange="update_response('input','{{id}}',document.getElementById('vote_form_{{id}}').elements['value'].value);return false;" />
+    </form>
+</div>
+{%endif%}

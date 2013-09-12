@@ -1,0 +1,85 @@
+{% extends "layouts/base.html" %}
+{% block title %}Survey{% endblock %}
+
+{%block body_onload %}initialize_elements();{%endblock%}
+
+{%block content %}
+
+      <!-- Jumbotron -->
+      <div class="jumbotron" id="welcome">
+        <h1>Hi there!</h1>
+        <p class="lead">I'm building a web-application for <strong>static analysis of Python code</strong> and <u>I need your help</u>. </p><p>So if you're a <strong>Python programmer</strong> and if code quality matters to you, I'd love to hear your feedback on the product that I'm planning to build. Just read through the description below and click on the <span class="survey_vote" id="test"></span> icons to indicate if you <u>need</u> a feature or not, or do nothing if you're not sure. Sometimes, I will also ask you for some <span class="survey_input" id="test"></span> OK? <span class="survey_vote" id="understood"></span> </p>
+      </div>
+      <h1 id="features">Features</h1>
+      <div class="row">
+        <div class="col-md-12">
+        <p>Please state if the following features are important to you: <i class="green icon-thumbs-up"></i> = I need this feature! ; <i class="grey icon-thumbs-down red"></i> = I don't need this feature ; <i class="icon-thumbs-up"></i> / <i class="grey icon-thumbs-down"> = I'm indifferent </i>  </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="widget">
+          <h2><i class="icon-github"></i> Github Integration </h2>
+            <ul>
+              <li>
+                Login with your Github account. <span class="survey_rate" id="login_with_github"></span>
+              </li>
+              <li>
+                Easily add existing Github repositories.
+              </li>
+              <li>
+                Create issues directly from the application.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <h1 id="pricing">Pricing</h1>
+        <p>Please state if the following features are important to you: <i class="green icon-thumbs-up"></i> = I need this feature! ; <i class="grey icon-thumbs-down red"></i> = I don't need this feature ; <i class="icon-thumbs-up"></i> / <i class="grey icon-thumbs-down"> = I'm indifferent </i>  </p>
+      <div class="row-fluid pricing">
+        <div class="col-md-4">
+          <div class="widget">
+            <h2>Business</h2>
+            <p class="price"><span class="survey_input" id="pricing_business"></span> $ / month</p>
+            <ul>
+              <li>
+                  feature 1 
+              </li>
+              <li>
+                  feature 2
+              </li>
+              <li>
+                  feature 3
+              </li>
+              <li>
+                  feature 4
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="widget">
+            <h2>Startup</h2>
+            <p><span class="survey_input" id="pricing_startup"></span> $ / month</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="widget">
+            <h2>Team</h2>
+            <p><span class="survey_input" id="pricing_team"></span> $ / month</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Site footer -->
+      <div class="footer">
+        <p>&copy; Company 2013</p>
+      </div>
+
+      <script>
+      admin = '{{admin}}';
+      var survey_key = 'my_first_survey';
+      var survey_server_url = '';
+      </script>
+
+{%endblock%}

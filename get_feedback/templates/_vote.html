@@ -1,0 +1,16 @@
+{% if admin %}
+<span class="summary">
+    <i class="icon-thumbs-up green"></i> {{summary.up}} <i class="icon-thumbs-down red"></i> {{summary.down}}
+</span>
+{%else%}
+<span id="vote_{{id}}">
+    {%if value == 1 %}
+        <a href="/update_response/vote/{{id}}/?value=0" onclick="update_response('vote','{{id}}',0);return false;" title="undo upvote"><i class="icon-thumbs-up green"></i></a>
+    {%elif value == -1 %}	
+        <a href="/update_response/vote/{{id}}/?value=0" onclick="update_response('vote','{{id}}',0);return false;" title="undo downvote"><i class="icon-thumbs-down red"></i></a>
+    {% else %}
+        <a href="/update_response/vote/{{id}}/?value=1" onclick="update_response('vote','{{id}}',1);return false;" title="thumbs up"><i class="icon-thumbs-up"></i></a> /
+        <a href="/update_response/vote/{{id}}/?value=-1" onclick="update_response('vote','{{id}}',-1);return false;" title="thumbs down"><i class="icon-thumbs-down"></i></a>
+    {% endif %}
+</span>
+{%endif%}
