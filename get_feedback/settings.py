@@ -10,6 +10,8 @@ ADMIN_SECRET = 'notasecret'
 def vote_aggregator(responses):
     counts = defaultdict(lambda : {'up':0,'down':0})
     for response in responses:
+        if not 'vote' in response:
+            continue
         for vote_id in response['vote']:
             if response['vote'][vote_id] == 1:
                 counts[vote_id]['up']+=1
@@ -20,6 +22,8 @@ def vote_aggregator(responses):
 def input_aggregator(responses):
     frequencies = defaultdict(lambda : defaultdict(lambda :0) )
     for response in responses:
+        if not 'input' in response:
+            continue
         for input_id in response['input']:
             frequencies[input_id][response['input'][input_id]]+=1
     for input_id in frequencies:
@@ -30,6 +34,8 @@ def input_aggregator(responses):
 def rate_aggregator(responses):
     counts = defaultdict(lambda: {'n':0,'average':0,'distribution':defaultdict(lambda :0)})
     for response in responses:
+        if not 'rate' in response:
+            continue
         for rate_id in response['rate']:
             d = counts[rate_id]
             value = response['rate'][rate_id]

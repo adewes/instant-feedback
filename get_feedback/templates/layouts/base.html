@@ -42,29 +42,39 @@
 
     <div class="container">
 
-      <div class="navbar navbar-default navbar-fixed-top">
+      <div class="navbar navbar-default">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Static Code Analysis For Python</a>
+          <a class="navbar-brand" href="#">Instant Feedback</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class="active"><a href="#welcome">Welcome</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="/">Welcome</a></li>
+          <li><a href="/index">My Surveys</a></li>
           </ul>
           <ul class="nav navbar-nav pull-right">
-          <li><a id="status_info"></a></li>
+          <li><a href="/new">New Survey</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     <div id="content">
     {%block content %}{%endblock%}
     </div>
+
+        <!-- Site footer -->
+      <div class="footer">
+        <p>&copy; 7scientists 2013, {{request.session}}</p>
+      </div>
+
+      <script>
+      var survey_key = 'my_first_survey';
+      var survey_server_url = '';
+      </script>
+
     </div>
   </body>
 

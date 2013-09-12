@@ -1,8 +1,17 @@
 
 var feature_types = ['vote','input','rate'];
-var admin = '';
 var survey_key = null;
+var session_key = null;
 var survey_server_url = '';
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var admin_key = getParameterByName('admin_key');
 
 function initialize_feature(feature_type,feature_id)
 {
@@ -47,7 +56,7 @@ function initialize_elements()
                 }            
             };
             var jqxhr = $.ajax({
-            url:survey_server_url+'/get_html/'+survey_key+'/'+feature_type+'/'+feature_id+(admin ? '?admin='+admin : ''),
+            url:survey_server_url+'/get_html/'+survey_key+'/'+feature_type+'/'+feature_id+'?'+(admin_key ? 'admin_key='+admin_key : 'admin_key=')+(session_key ? '&session_key='+session_key: ''),
             data:{},
             type:'GET',
             dataType:'json'})
@@ -60,7 +69,7 @@ function update_response(feature_type,feature_id,value)
 {
     document.getElementById("status_info").innerHTML = "Syncing..."
     var jqxhr = $.ajax({
-        url:survey_server_url+'/update_response/'+survey_key+'/'+feature_type+'/'+feature_id,
+        url:survey_server_url+'/update_response/'+survey_key+'/'+feature_type+'/'+feature_id+(session_key ? '?session_key='+session_key: ''),
         data:{'value':value},
         type:'POST',
         dataType:'json'})
@@ -101,7 +110,15 @@ function mouseout_star(feature_id,star,current_value)
     for(var i=1;i<=5;i++)
     {
         var e = $('#rate_'+feature_id+'_'+i);
-        if(e.hasClass('yellow') & i > current_value)
-            e.removeClass('yellow');
+        if (i <= current_value)
+        {
+            if(! e.hasClass('yellow'))
+                e.addClass('yellow');
+        }
+        else
+        {
+            if(e.hasClass('yellow'))
+                e.removeClass('yellow');
+        }
     }
 }
