@@ -251,4 +251,4 @@ def show_summary(survey_key,field_type,field_id):
     return json.dumps({'status':200,'admin':True,'value':summary,'html':render_template(template,**{'summary':summary,'show_summary':True,'field_type':field_type,'field_id' : field_id,'field':request.field.attributes})})
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug = True,host = '0.0.0.0')
