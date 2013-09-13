@@ -30,29 +30,15 @@ a:hover + div.hovering {
     position:relative !important;
 }
 
-.slider,
-.slider_reference
+.scale .slider
 {
-    border-radius:10px;
-    border:1px solid #777;
     position:absolute !important;
     pointer-events:none;
     left:190px;
-    top:4px;
+    top:-15px;
     width:10px;
     height:20px;
-    background:#aaa;
     z-index:2;
-}
-
-.slider_reference
-{
-    background:none;
-    width:1px;
-    margin-left:5px;
-    border:none;
-    border-left:1px dotted #000;
-    z-index:0;
 }
 
 .gradient

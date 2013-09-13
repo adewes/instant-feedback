@@ -162,11 +162,9 @@ function init_slider_value(feature_id,value)
 {
     scale = document.getElementById('scale_'+feature_id);
     slider = document.getElementById('scale_'+feature_id+'_slider');
-    slider_reference = document.getElementById('scale_'+feature_id+'_slider_reference');
     var total_width = scale.offsetWidth;    
     var slider_position = (value+1.0)/2.0*total_width;
     slider.style.left = Math.floor(slider_position-slider.offsetWidth/2.0)+"px";
-    slider_reference.style.left = slider.style.left;
 }
 
 function update_slider_value(e,feature_id)

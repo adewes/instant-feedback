@@ -6,21 +6,19 @@
   <table class="scale" style="margin:0 auto; font-size:1.2em;">
     <tr>
       <td style="text-align:right; width:33%;">
-        wenig
+        {%if field.left_text%}{{field.left_text}}{%else%}not at all{%endif%}
       </td>
       <td>
           {%if show_summary %}
-              <div id="scale_{{field_id}}_slider" class="slider"></div>
-              <div id="scale_{{field_id}}_slider_reference" class="slider_reference"></div>
+              <div id="scale_{{field_id}}_slider" class="slider"><i class="icon-caret-down"></i></div>
               <div id="scale_{{field_id}}_gradient" class="gradient">&nbsp;</div>
           {% else %}
-              <div id="scale_{{field_id}}_slider" class="slider"></div>
-              <div id="scale_{{field_id}}_slider_reference" class="slider_reference"></div>
+              <div id="scale_{{field_id}}_slider" class="slider"><i class="icon-caret-down"></i></div>
               <div id="scale_{{field_id}}_gradient" class="gradient">&nbsp;</div>
           {%endif%}
       </td>
       <td style="width:33%">
-        viel
+        {%if field.right_text%}{{field.right_text}}{%else%}very much{%endif%}
       </td>
     </tr>
   </table>
