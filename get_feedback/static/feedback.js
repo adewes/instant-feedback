@@ -1,7 +1,8 @@
 
-var feature_types = ['vote','input','rate','scale','check'];
+var feature_types = ['vote','input','rate','scale','check','select'];
 var survey_key = null;
 var session_key = null;
+var show_summary = getParameterByName('show_summary');
 var survey_server_url = '';
 
 function getParameterByName(name) {
@@ -11,11 +12,9 @@ function getParameterByName(name) {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var admin_key = getParameterByName('admin_key');
-
 function initialize_feature(feature_type,feature_id,value,admin)
 {
-    if (feature_type == 'input' || feature_type == 'rate')
+    if (feature_type == 'input' || feature_type == 'rate' || feature_type == 'select')
     {
         $(function(){
         $('[rel=popover]').popover({ 
@@ -25,6 +24,9 @@ function initialize_feature(feature_type,feature_id,value,admin)
         }
         });
         });
+    }
+    else if (feature_type == 'check')
+    {
     }
     else if (feature_type == 'scale')
     {
@@ -88,7 +90,7 @@ function initialize_elements()
                 }            
             };
             var jqxhr = $.ajax({
-            url:survey_server_url+'/get_html/'+survey_key+'/'+feature_type+'/'+feature_id+'?'+(admin_key ? 'admin_key='+admin_key : 'admin_key=')+(session_key ? '&session_key='+session_key: ''),
+            url:survey_server_url+(show_summary ? '/show_summary/' : '/get_html/')+survey_key+'/'+feature_type+'/'+feature_id+(session_key ? '?session_key='+session_key: ''),
             data:{},
             type:'GET',
             dataType:'json'})
@@ -98,7 +100,6 @@ function initialize_elements()
 }
 
 window.onload = initialize_elements;
-
 
 function update_response(feature_type,feature_id,value)
 {
@@ -115,7 +116,26 @@ function update_response(feature_type,feature_id,value)
         }
     }
     )
+}
 
+function update_field(feature_type,feature_id)
+{
+    var attributes =$('#'+feature_type+'_'+feature_id+'_form').serialize();
+    $('#'+feature_type+'_'+feature_id+'_modal').modal('hide').on('hidden.bs.modal', function(){
+        var jqxhr = $.ajax({
+            url:survey_server_url+'/update_field/'+survey_key+'/'+feature_type+'/'+feature_id,
+            data:{'attributes':attributes},
+            type:'POST',
+            dataType:'json'})
+            .done(function(data) {
+                if (data['status'] = 200)
+                {
+                    $("#"+feature_type+"_"+feature_id).html(data['html']);
+                    initialize_feature(feature_type,feature_id,data['value']);
+               }
+            });
+        }
+    );
 }
 
 /*helper functions for the rate element */

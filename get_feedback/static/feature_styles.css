@@ -1,3 +1,9 @@
+
+.survey_field
+{
+  white-space: nowrap;
+}
+
 div.answers
 {
   font-size:0.6em;
@@ -32,7 +38,7 @@ a:hover + div.hovering {
     position:absolute !important;
     pointer-events:none;
     left:190px;
-    top:-1px;
+    top:4px;
     width:10px;
     height:20px;
     background:#aaa;

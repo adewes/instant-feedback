@@ -1,13 +1,27 @@
-{%if admin %}
-<div id="scale_{{id}}" class="scale">
-    <div id="scale_{{id}}_slider" class="slider"></div>
-    <div id="scale_{{id}}_slider_reference" class="slider_reference"></div>
-    <div id="scale_{{id}}_gradient" class="gradient">&nbsp;</div>
-</div>
-{% else %}
-<div id="scale_{{id}}" class="scale">
-    <div id="scale_{{id}}_slider" class="slider"></div>
-    <div id="scale_{{id}}_slider_reference" class="slider_reference"></div>
-    <div id="scale_{{id}}_gradient" class="gradient">&nbsp;</div>
-</div>
-{%endif%}
+{%extends '_field.html' %}
+{% block opening %}<div class="survey_field" id="scale_{{field_id}}">{%endblock%}
+{% block closing %}</div>{%endblock%}
+
+{%block main%}
+  <table class="scale" style="margin:0 auto; font-size:1.2em;">
+    <tr>
+      <td style="text-align:right; width:33%;">
+        wenig
+      </td>
+      <td>
+          {%if show_summary %}
+              <div id="scale_{{field_id}}_slider" class="slider"></div>
+              <div id="scale_{{field_id}}_slider_reference" class="slider_reference"></div>
+              <div id="scale_{{field_id}}_gradient" class="gradient">&nbsp;</div>
+          {% else %}
+              <div id="scale_{{field_id}}_slider" class="slider"></div>
+              <div id="scale_{{field_id}}_slider_reference" class="slider_reference"></div>
+              <div id="scale_{{field_id}}_gradient" class="gradient">&nbsp;</div>
+          {%endif%}
+      </td>
+      <td style="width:33%">
+        viel
+      </td>
+    </tr>
+  </table>
+{%endblock%}

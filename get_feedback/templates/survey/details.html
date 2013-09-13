@@ -9,13 +9,12 @@
       <div class="row">
         <div class="col-md-12">
             <h2>Survey Details - {{survey.name}}</h2>
-            <p>Admin key: {{survey.admin_key}}</p>
-            <p>Public key: {{survey.key}}</p>
+            <p>Survey key: {{survey.key}}</p>
             <p>Responses: {{responses}}</p>
-            <p>Access restrictions: {%if survey.authorized_keys_only %}authorized session keys only{%else%}all session keys{%endif%} <a href="/toogle_authorized_keys_only/{{survey.admin_key}}">(toggle)</a></p>
-            <p>Authorized keys: {{survey.authorized_keys|length}} {%if survey.authorized_keys|length < 100 %}{{survey.authorized_keys|join(", ")}}{%endif%} <a href="/clear_authorized_keys/{{survey.admin_key}}">(clear)</a></p>
+            <p>Access restrictions: {%if survey.authorized_keys_only %}authorized session keys only{%else%}all session keys{%endif%} <a href="/toogle_authorized_keys_only/{{survey.key}}">(toggle)</a></p>
+            <p>Authorized keys: {{survey.authorized_keys|length}} {%if survey.authorized_keys|length < 100 %}{{survey.authorized_keys|join(", ")}}{%endif%} <a href="/clear_authorized_keys/{{survey.key}}">(clear)</a></p>
             <p>
-            <form action="/authorize_session_key/{{survey.admin_key}}" method="GET">
+            <form action="/authorize_session_key/{{survey.key}}" method="GET">
               <input name="session_key" value="" />
               <button type="submit" class="btn">Add authorized key</button>
             </form>

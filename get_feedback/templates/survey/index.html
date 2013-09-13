@@ -11,7 +11,7 @@
             <h2>Your surveys</h2>
             <ul>
             {%for survey in surveys %}
-                <li><a href="/details/{{survey.admin_key}}">{%if survey.name %}{{survey.name}}{%else%}(unnamed){%endif%}</a></li>
+                <li><a href="/details/{{survey.key}}">{%if survey.name %}{{survey.name}}{%else%}(unnamed){%endif%}</a></li>
             {%endfor%}
             </ul>
         </div>
