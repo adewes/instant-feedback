@@ -4,7 +4,7 @@
 
 {%block main%}
   {%if show_summary %}
-  <a rel="popover" 
+  <a href="#" onclick="return false;" rel="popover" 
       data-content="<div class=answers>
           <ul>
           {% for value in summary %}
@@ -13,7 +13,7 @@
           </ul>
       </div>
       " 
-      data-html="true" data-trigger="hover" data-original-title="Answers" class="summary">{%if summary %}(see answers){%else%}(no answers){%endif%}
+      data-html="true" data-trigger="click" data-original-title="Answers" class="summary">{%if summary %}(see answers){%else%}(no answers){%endif%}
   </a>
   {%else%}
       <form id="vote_form_{{field_id}}" action="/update_response/input/{{field_id}}" method="POST" onsubmit="update_response('input','{{field_id}}',document.getElementById('vote_form_{{field_id}}').elements['value'].value);return false;" >

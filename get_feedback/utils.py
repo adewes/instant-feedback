@@ -114,13 +114,9 @@ def with_response():
         
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if 'session_key' in request.args:
-                session_key = request.args['session_key']
-            else:
-                session_key = request.session
-            response = Response.collection.find_one({'survey_key' : request.survey['key'],'session':session_key})
+            response = Response.collection.find_one({'survey_key' : request.survey['key'],'session':request.session})
             if not response:
-                response = Response(**{'survey_key': request.survey['key'],'session':session_key})
+                response = Response(**{'survey_key': request.survey['key'],'session':request.session})
             request.response = response
             return f(*args, **kwargs)
         

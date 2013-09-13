@@ -1,0 +1,52 @@
+{% extends "layouts/base.html" %}
+{% block title %}Survey Summary - {{survey.name}} {% endblock %}
+
+{%block head_extra %}
+<script>
+var survey_key = '{{survey.key}}';
+var show_summary = true;
+</script>
+{%endblock%}
+
+{%block content %}
+
+      <!-- Jumbotron -->
+      <div class="row">
+        <div class="col-md-12">
+            <h2>Survey Summary - {{survey.name}}</h2>
+            <p>Respondents: {{responses}}</p>
+            <h3>Fields</h3>
+            <table class="table table-striped table-bordered table-hover table-condensed table-responsive">
+            <thead>
+              <tr>
+                <th>
+                  ID
+                </th>
+                <th>
+                  Description
+                </th>
+                <th>
+                  Summary
+                </th>
+              </tr>
+            </thead>
+            {%for field_type in survey.fields%}
+
+            <tr><td colspan=3 style="font-size:2em; padding:20px">{{field_type}}</td></tr>
+              {% for id in survey.fields.get(field_type) %}
+                <tr>
+                  <td>{{id}}</td>
+                  <td>{%if survey.fields.get(field_type).get(id).description%}{{survey.fields.get(field_type).get(id).description}}{%else%}(no description available){%endif%}</td>
+                  <td>
+                    <span class="survey_{{field_type}}" id="{{id}}"></span>
+                  </td>
+                </tr>            
+                
+
+              {%endfor%}
+
+            {%endfor%}
+            </table>
+        </div>
+      </div>
+{%endblock%}

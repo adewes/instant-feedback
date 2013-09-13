@@ -4,9 +4,16 @@
   white-space: nowrap;
 }
 
+a.popover:hover
+{
+  text-decoration:none;
+}
+
 div.answers
 {
   font-size:0.6em;
+  max-height:200px;
+  overflow:auto;
 }
 
 div.hovering {
@@ -28,6 +35,8 @@ a:hover + div.hovering {
 .scale
 {
     position:relative !important;
+    display:inline;
+    width:200px;
 }
 
 .scale .slider
@@ -44,6 +53,7 @@ a:hover + div.hovering {
 .gradient
 {
     border-radius:6px;
+    position:relative !important;
     background: #ff5151; /* Old browsers */
     background: -moz-linear-gradient(left,  #ff5151 0%, #52f952 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,#ff5151), color-stop(100%,#52f952)); /* Chrome,Safari4+ */
@@ -54,7 +64,21 @@ a:hover + div.hovering {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff5151', endColorstr='#52f952',GradientType=1 ); /* IE6-9 */
     display:block; 
     height:20px; 
+    left:0;
     width:400px;
+}
+
+.gradient span
+{
+  margin-left:5px;
+  cursor:default;
+}
+
+.gradient span.right
+{
+  position:absolute;
+  right:0;
+  margin-right:5px;
 }
 
 .yellow

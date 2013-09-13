@@ -19,6 +19,7 @@ function initialize_feature(feature_type,feature_id,value,admin)
         $(function(){
         $('[rel=popover]').popover({ 
         html : true, 
+        placement: 'bottom',
         content: function() {
         return $('#popover_content_wrapper').html();
         }
@@ -66,7 +67,6 @@ function initialize_elements()
 {
     if (! survey_key)
     {
-        alert("survey key undefined!");
         return;
     }
     for(var i=0;i<feature_types.length;i++)
@@ -163,16 +163,16 @@ function mouseover_star(feature_id,star,current_value)
 
 function init_slider_value(feature_id,value)
 {
-    scale = document.getElementById('scale_'+feature_id);
+    scale = document.getElementById('scale_'+feature_id+'_gradient');
     slider = document.getElementById('scale_'+feature_id+'_slider');
-    var total_width = scale.offsetWidth;    
+    var total_width = scale.offsetWidth;
     var slider_position = (value+1.0)/2.0*total_width;
     slider.style.left = Math.floor(slider_position-slider.offsetWidth/2.0)+"px";
 }
 
 function update_slider_value(e,feature_id)
 {
-    scale = document.getElementById('scale_'+feature_id);
+    scale = document.getElementById('scale_'+feature_id+'_gradient');
     slider = document.getElementById('scale_'+feature_id+'_slider');
     var offset_x = scale.offsetLeft;
     var total_width = scale.offsetWidth;
@@ -183,7 +183,7 @@ function update_slider_value(e,feature_id)
 
 function move_slider_value(e,feature_id)
 {
-    scale = document.getElementById('scale_'+feature_id);
+    scale = document.getElementById('scale_'+feature_id+'_gradient');
     slider = document.getElementById('scale_'+feature_id+'_slider');
     var offset_x = scale.offsetLeft;
     var total_width = scale.offsetWidth;

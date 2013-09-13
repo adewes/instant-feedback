@@ -1,17 +1,55 @@
 {% extends "layouts/base.html" %}
 {% block title %}Survey Details - {{survey.name}} {% endblock %}
 
-{%block body_onload %}initialize_elements();{%endblock%}
-
 {%block content %}
 
       <!-- Jumbotron -->
       <div class="row">
         <div class="col-md-12">
             <h2>Survey Details - {{survey.name}}</h2>
-            <p>Survey key: {{survey.key}}</p>
-            <p>Responses: {{responses}}</p>
-            <p>Access restrictions: {%if survey.authorized_keys_only %}authorized session keys only{%else%}all session keys{%endif%} <a href="/toogle_authorized_keys_only/{{survey.key}}">(toggle)</a></p>
+            <a href="/export_responses/{{survey.key}}">export results as JSON</a> // <a href="/summary/{{survey.key}}">summary</a> // <a href="/fields/{{survey.key}}">fields</a>  // <a href="/delete/{{survey.key}}"><i class="icon-trash"></i> delete</a>
+            <table class="table table-responsive table-striped table-bordered">
+            <thead>
+            <tr>
+              <th>
+              Name
+              </th>
+              <th>
+              Value
+              </th>
+            </tr>
+            </thead>
+            <tr>
+              <td>
+                Survey key
+              </td>
+              <td>
+                {{survey.key}}
+              </td>
+            </tr>
+            <tr>
+            <td>
+            Responses
+            </td>
+            <td>
+            {{responses}}
+            </td>
+            </tr>
+            <tr>
+            <td>Links</td>
+            <td>
+            <p>{%if survey.survey_url %}<a href="{{survey.survey_url}}">normal view</a> // <a href="{{survey.survey_url}}?show_summary=1">admin view</a>{%else%}No URL given, please provide:{%endif%}
+            </p>
+            <form action="/set_survey_url/{{survey.key}}" method="POST">
+              <input name="survey_url" class="form-control" style="width:200px; display:inline;" value="{{survey.survey_url}}" />
+              <button type="submit" class="btn">Update URL</button>
+            </form>
+ 
+            </td>
+            </tr>
+            </table>
+            {%if False %}
+            <p>Access: {%if survey.authorized_keys_only %}authorized session keys only{%else%}open for everyone{%endif%} <a href="/toogle_authorized_keys_only/{{survey.key}}">(toggle)</a></p>
             <p>Authorized keys: {{survey.authorized_keys|length}} {%if survey.authorized_keys|length < 100 %}{{survey.authorized_keys|join(", ")}}{%endif%} <a href="/clear_authorized_keys/{{survey.key}}">(clear)</a></p>
             <p>
             <form action="/authorize_session_key/{{survey.key}}" method="GET">
@@ -19,6 +57,30 @@
               <button type="submit" class="btn">Add authorized key</button>
             </form>
             </p>
+            {%endif%}
         </div>
+      </div>
+      <div class="row" style="background:#efe; margin:10px; padding:20px; border-radius:20px; border:5px solid #afa;">
+      <div class="col-md-12">
+      <h2>How to use the survey</h2>
+      It's really easy.
+      <h3>1.) Copy &amp; Paste Code</h3>
+      <p>Just take the following code and put it into the <strong>HEAD</strong> section of your HTML file:</p>
+      <pre>
+&lt;link href="/static/feature_styles.css" rel="stylesheet"&gt;
+&lt;script src="/static/feedback.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+var session_key = '{{survey.key}}';
+&lt;/script&gt;</pre>
+
+      <h3>2.) Make sure the initialization code runs</h3>
+
+      <p>
+      <i>feedback.js</i> will call a function called <i>initialize_elements()</i> when the body of your document gets loaded. So, if you overwrite the <i>onload</i> function of the <i>body</i> element, make sure to call <i>initialize_elements()</i> by hand.
+      </p>
+
+      <h3>2.) Place survey fields</h3>
+
+      </div>
       </div>
 {%endblock%}

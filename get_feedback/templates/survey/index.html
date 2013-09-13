@@ -1,17 +1,15 @@
 {% extends "layouts/base.html" %}
 {% block title %}Your surveys{% endblock %}
 
-{%block body_onload %}initialize_elements();{%endblock%}
-
 {%block content %}
 
       <!-- Jumbotron -->
       <div class="row">
         <div class="col-md-12">
-            <h2>Your surveys</h2>
+            <h2>My surveys</h2>
             <ul>
             {%for survey in surveys %}
-                <li><a href="/details/{{survey.key}}">{%if survey.name %}{{survey.name}}{%else%}(unnamed){%endif%}</a></li>
+                <li><a href="/details/{{survey.key}}">{%if survey.name %}{{survey.name}}{%else%}(unnamed){%endif%}</a> (created <strong>{{survey._created_at.date()}})</strong></li>
             {%endfor%}
             </ul>
         </div>

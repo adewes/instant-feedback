@@ -8,6 +8,25 @@ p
   font-size:1.2em;
 }
 
+.error,
+.info
+{
+  padding:10px;
+  border-radius:6px;
+  margin:10px 0 10px 0;
+  font-weight:bolder;
+}
+
+.info
+{
+  background:#afa;
+}
+
+.error
+{
+  background:#faa;
+}
+
 #content li
 {
   font-size:1.4em;

@@ -19,7 +19,7 @@ db = pymongo.MongoClient().survey
 
 field_types = {
     'check': fields.Check,
-    'scale': fields.Scale,
+#    'scale': fields.Scale,
     'rate': fields.Rate,
     'vote': fields.Vote,
     'input': fields.Input,

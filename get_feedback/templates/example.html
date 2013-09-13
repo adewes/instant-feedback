@@ -1,77 +1,18 @@
+{%extends 'layouts/base.html' %}
 
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="/static/bootstrap/assets/ico/favicon.png">
-    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
-    
-    <title>Survey</title>
-
-    <!-- Bootstrap core CSS -->
-
-    <script src="/static/bootstrap/assets/js/jquery.js"></script>
-
-    <link href="/static/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="/static/justified_nav.css" rel="stylesheet">
-
-    <script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/static/bootstrap/js/modal.js"></script>
-    <script src="/static/bootstrap/js/scrollspy.js"></script>
-    <script src="/static/bootstrap/js/tooltip.js"></script>
-    <script src="/static/bootstrap/js/popover.js"></script>
-
-    <link href="/static/feature_styles.css" rel="stylesheet">
-    <script src="/static/feedback.js"></script>
-
+{%block head_extra %}
     <script>
-    var survey_key = '3de9d6d5fd86404f8b134eb20111a3fb';
-    var survey_server_url = '';
+    var survey_key = '{{survey.key}}';
     </script>
+{%endblock%}
 
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="/static/bootstrap/assets/js/html5shiv.js"></script>
-      <script src="/static/bootstrap/assets/js/respond.min.js"></script>
-    <![endif]-->
-
-
-  </head>
-  <body data-spy="scroll">
-
-    <div class="container">
-
-      <div class="navbar navbar-default navbar-fixed-top">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Static Code Analysis For Python</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-          <li class="active"><a href="#welcome">Welcome</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          </ul>
-          <ul class="nav navbar-nav pull-right">
-          <li><a id="status_info"></a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    <div id="content">
-    
-
+{%block content %}
       <!-- Jumbotron -->
       <div class="jumbotron" id="welcome">
         <h1>Hi there!</h1>
+        <p>
+        <a href="" onclick="show_summary = ! show_summary;initialize_elements();if (show_summary)this.innerHTML='show live survey';else this.innerHTML='show results summary';return false;">show results summary</a>
+        </p>
         <p class="lead">I'm building a web-application for <strong>static analysis of Python code</strong> and <u>I need your help</u>. </p><p>So if you're a <strong>Python programmer</strong> and if code quality matters to you, I'd love to hear your feedback on the product that I'm planning to build. Just read through the description below and click on the <span class="survey_vote" id="test"></span> icons to indicate if you <u>need</u> a feature or not, or do nothing if you're not sure. Sometimes, I'll also ask you for some <span class="survey_input" id="test"></span> OK? <span class="survey_check" id="understood"></span> </p>
       </div>
       <h1 id="features">Features</h1>
@@ -101,9 +42,7 @@
       <h1 id="pricing">Pricing</h1>
         <p>Please state if the following features are important to you: <i class="green icon-thumbs-up"></i> = I need this feature! ; <i class="grey icon-thumbs-down red"></i> = I don't need this feature ; <i class="icon-thumbs-up"></i> / <i class="grey icon-thumbs-down"> = I'm indifferent </i>  </p>
 
-        this is a scale:<span class="survey_scale" id="like"></span>
-
-      <div class="row-fluid pricing">
+      <div class="row pricing">
         <div class="col-md-4">
           <div class="widget">
             <h2>Business</h2>
@@ -137,18 +76,4 @@
           </div>
         </div>
       </div>
-
-      <!-- Site footer -->
-      <div class="footer">
-        <p>&copy; Company 2013</p>
-      </div>
-
-
-    </div>
-    </div>
-  </body>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-</html>
+{%endblock%}

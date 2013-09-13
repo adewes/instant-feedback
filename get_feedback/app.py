@@ -5,6 +5,8 @@ import uuid
 import json
 import time
 import urlparse
+import datetime
+import re
 from collections import defaultdict
 from models import Survey,User,Response
 from utils import *
@@ -21,14 +23,36 @@ def welcome():
     response = make_response(render_template("welcome.html",**context))
     return response
 
+@app.route('/example')
+@with_session()
+@with_user()
+def example():
+    survey = Survey.collection.find_one({'user':request.user,'name':'example'})
+    if not survey:
+        survey = Survey(fields = {},authorized_keys = [],authorized_keys_only = False,key = uuid.uuid4().hex,name = "example",user = request.user)
+        survey.save()
+    context = {'survey' : survey}
+    response = make_response(render_template("example.html",**context))
+    return response
+
+@app.route('/login_as/<session_key>')
+@with_session()
+@with_user()
+def login_as(session_key):
+    request.session = session_key
+    return redirect(url_for('index'))
+
+def _index():
+    surveys = Survey.collection.find({'user':request.user}).sort('_created_at',-1)
+    context = {'surveys':surveys}
+    response = make_response(render_template("survey/index.html",**context))
+    return response
+
 @app.route('/index')
 @with_session()
 @with_user()    
 def index():
-    surveys = Survey.collection.find({'user':request.user})
-    context = {'surveys':surveys}
-    response = make_response(render_template("survey/index.html",**context))
-    return response
+    return _index()
 
 @app.route('/details/<survey_key>')
 @with_session()
@@ -39,6 +63,49 @@ def details(survey_key):
     responses = Response.collection.find({'survey_key': request.survey['key']}).count()
     context = {'survey':request.survey,'responses':responses}
     response = make_response(render_template("survey/details.html",**context))
+
+    return response
+
+@app.route('/summary/<survey_key>')
+@with_session()
+@with_survey()
+@with_user()
+@with_admin()
+def summary(survey_key):
+    responses = Response.collection.find({'survey_key': request.survey['key']}).count()
+    context = {'survey':request.survey,'responses':responses}
+    response = make_response(render_template("survey/summary.html",**context))
+
+    return response
+
+@app.route('/fields/<survey_key>')
+@with_session()
+@with_survey()
+@with_user()
+@with_admin()
+def fields(survey_key):
+    context = {'survey':request.survey}
+    response = make_response(render_template("survey/fields.html",**context))
+    return response
+
+@app.route('/export_responses/<survey_key>')
+@with_session()
+@with_survey()
+@with_user()
+@with_admin()
+def export_responses(survey_key):
+    responses = Response.collection.find({'survey_key': request.survey['key']})
+
+    exported_responses = []
+
+    for response in responses:
+        exported_fields = {'created_at' : response['_created_at'].strftime("%s"),'updated_at': response['_updated_at'].strftime("%s")}
+        for field_type in settings.field_types:
+            if field_type in response:
+                exported_fields[field_type] = response[field_type]
+        exported_responses.append(exported_fields)
+
+    response = make_response(json.dumps({'fields':request.survey['fields'],'responses':exported_responses}))
 
     return response
 
@@ -66,21 +133,59 @@ def clear_authorized_keys(survey_key):
     request.survey.save()
     return redirect(url_for("details",survey_key = request.survey['key']))
 
+@app.route('/delete/<survey_key>',methods = ['GET'])
+@with_session()
+@with_user()
+@with_survey()
+@with_admin()
+def delete(survey_key):
+    context = {'survey':request.survey}
+    if 'confirm' in request.args:
+        Response.collection.remove({'survey_key':request.survey['key']})
+        request.survey.delete()
+        return redirect(url_for("index"))
+    response = make_response(render_template("survey/delete.html",**context))
+    return response
+
+
+
 @app.route('/new',methods = ['GET','POST'])
 @with_session()
 @with_user()
 def new():
 
-    context = {}
+    error = None
+    name = ''
+    key = ''
+
+    def form():
+        context = {'error':error,'name':name,'key':key}
+        response = make_response(render_template("survey/new.html",**context))
+        return response
 
     if request.method == 'POST':
-        survey = Survey(fields = {},authorized_keys = [],authorized_keys_only = False,key = uuid.uuid4().hex,name = request.form['name'],user = request.user)
+        if not 'name' in request.form or not request.form['name'].strip():
+            error = 'You need to supply a name for your survey...'
+            return form()
+        name = request.form['name']
+        if Survey.collection.find({'user':request.user,'name':name}).count():
+            error = 'You already have a survey with that name...'
+            return form()
+        if 'key' in request.form and request.form['key'].strip():
+            key = request.form['key']
+            if re.search(r"[^\w\d\-]+",key):
+                error = "Error: Please use only letters and hyphens for the survey key."
+                return form()
+        else:
+            key = uuid.uuid4().hex
+        if Survey.collection.find({'key':key}).count():
+            error = 'A survey with this key already exists...'
+            return form()
+        survey = Survey(fields = {},authorized_keys = [],authorized_keys_only = False,key = key,name = name,user = request.user)
         survey.save()
         return redirect(url_for("details",survey_key = survey['key']))
     else:
-        response = make_response(render_template("survey/new.html",**context))
-
-    return response
+        return form()
 
 def request_wants_json():
     best = request.accept_mimetypes \
@@ -88,6 +193,25 @@ def request_wants_json():
     return best == 'application/json' and \
         request.accept_mimetypes[best] > \
         request.accept_mimetypes['text/html']
+
+@app.route('/set_survey_url/<survey_key>',methods = ['POST'])
+@with_session()
+@with_user()
+@with_survey()
+@with_admin()
+def set_survey_url(survey_key):
+
+    if not "survey_url" in request.form:
+        abort(404)
+
+    survey_url = request.form["survey_url"]
+    request.survey['survey_url'] = survey_url
+    request.survey.save()
+    if request_wants_json():
+        return json.dumps({'status':200})
+    else:
+        return redirect(url_for("details",survey_key = request.survey['key']))
+
 
 @app.route('/authorize_session_key/<survey_key>',methods = ['GET'])
 @with_session()
