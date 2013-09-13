@@ -21,6 +21,8 @@ class Select(BaseField):
         return ''
 
     def aggregate(self,responses):
+        if not 'choices' in self.attributes:
+            return {}
         frequencies = defaultdict(lambda : defaultdict(lambda :0) )
         for response in responses:
             if not 'select' in response:
@@ -36,6 +38,8 @@ class Select(BaseField):
 
     def provide_context(self,value):
         d = {'i':value}
+        if not 'choices' in self.attributes:
+            return d
         if value < len(self.attributes['choices']):
             d['choice'] = self.attributes['choices'][value][1]
         return d

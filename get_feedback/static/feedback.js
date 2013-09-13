@@ -92,6 +92,7 @@ function initialize_elements()
             var jqxhr = $.ajax({
             url:survey_server_url+(show_summary ? '/show_summary/' : '/get_html/')+survey_key+'/'+feature_type+'/'+feature_id+(session_key ? '?session_key='+session_key: ''),
             data:{},
+	    cache: false,
             type:'GET',
             dataType:'json'})
             .done(build_callback(element,feature_type,feature_id));
@@ -107,6 +108,7 @@ function update_response(feature_type,feature_id,value)
         url:survey_server_url+'/update_response/'+survey_key+'/'+feature_type+'/'+feature_id+(session_key ? '?session_key='+session_key: ''),
         data:{'value':value},
         type:'POST',
+	cache: false,
         dataType:'json'})
         .done(function(data) {
         if (data['status'] = 200)
@@ -126,6 +128,7 @@ function update_field(feature_type,feature_id)
             url:survey_server_url+'/update_field/'+survey_key+'/'+feature_type+'/'+feature_id,
             data:{'attributes':attributes},
             type:'POST',
+	    cache: false,
             dataType:'json'})
             .done(function(data) {
                 if (data['status'] = 200)
