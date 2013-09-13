@@ -68,27 +68,6 @@ h1
   padding-bottom: 40px;
 }
 
-i
-{
-  color:#aaa;
-}
-
-.green
-{
-  color:#0a0;
-  background:#eee;
-  border-radius:5px;
-  padding:4px;
-}
-
-.red
-{
-  color:#a00;
-  border-radius:5px;
-  background:#eee;
-  padding:4px;
-}
-
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;

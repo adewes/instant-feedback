@@ -225,9 +225,8 @@ def update_response(survey_key,feature_type,feature_id):
         request.response[feature_type] = {}
     request.response[feature_type][feature_id] = parsed_value
     request.response.save()
-    value = request.response[feature_type][feature_id]
 
-    return json.dumps({'status':200,'html':render_template(template,**{'id' : feature_id,'value' : value})})
+    return json.dumps({'status':200,'value':parsed_value,'html':render_template(template,**{'id' : feature_id,'value' : parsed_value})})
     
 @app.route('/get_html/<survey_key>/<feature_type>/<feature_id>',methods = ['GET'])
 @with_session()
@@ -243,7 +242,7 @@ def get_html(survey_key,feature_type,feature_id):
         summary = _get_summary(request.survey)
         if not feature_type in summary or not feature_id in summary[feature_type]:
             abort(404)
-        return json.dumps({'status':200,'html':render_template(template,**{'summary':summary[feature_type][feature_id],'admin':True,'id' : feature_id})})
+        return json.dumps({'status':200,'admin':True,'value':summary[feature_type][feature_id],'html':render_template(template,**{'summary':summary[feature_type][feature_id],'admin':True,'id' : feature_id})})
     else:
         if request.survey['authorized_keys_only'] and not request.response['session'] in request.survey['authorized_keys']:
             return json.dumps({'status':403,'html': ''})
@@ -251,8 +250,7 @@ def get_html(survey_key,feature_type,feature_id):
             value = feature_settings['default']()
         else:
             value = request.response[feature_type][feature_id]
-        print feature_id,value,type(value)
-        return json.dumps({'status':200,'html':render_template(template,**{'admin':False,'id' : feature_id,'value' : value})})
+        return json.dumps({'status':200,'value':value,'html':render_template(template,**{'admin':False,'id' : feature_id,'value' : value})})
 
 
 if __name__ == '__main__':

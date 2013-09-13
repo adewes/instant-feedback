@@ -1,5 +1,5 @@
 
-var feature_types = ['vote','input','rate'];
+var feature_types = ['vote','input','rate','scale','check'];
 var survey_key = null;
 var session_key = null;
 var survey_server_url = '';
@@ -13,7 +13,7 @@ function getParameterByName(name) {
 
 var admin_key = getParameterByName('admin_key');
 
-function initialize_feature(feature_type,feature_id)
+function initialize_feature(feature_type,feature_id,value,admin)
 {
     if (feature_type == 'input' || feature_type == 'rate')
     {
@@ -25,6 +25,38 @@ function initialize_feature(feature_type,feature_id)
         }
         });
         });
+    }
+    else if (feature_type == 'scale')
+    {
+        if (admin)
+        {
+            init_slider_value(feature_id,value['average']);
+        }
+        else
+        {
+            init_slider_value(feature_id,value);
+            function build_move_callback(feature_id) {
+                return function(event) {
+                    return move_slider_value(event,feature_id);
+                }            
+            };
+
+            function build_click_callback(feature_id) {
+                return function(event) {
+                    return update_slider_value(event,feature_id);
+                }            
+            };
+
+            function build_mouseout_callback(feature_id) {
+                return function(event) {
+                    return init_slider_value(feature_id,value);
+                }            
+            };
+
+            $('#'+feature_type+'_'+feature_id+'_gradient').mousemove(build_move_callback(feature_id));
+            $('#'+feature_type+'_'+feature_id+'_gradient').mouseout(build_mouseout_callback(feature_id));
+            $('#'+feature_type+'_'+feature_id+'_gradient').click(build_click_callback(feature_id));
+        }
     }
 }
 
@@ -51,7 +83,7 @@ function initialize_elements()
                         var new_element = element;
                         new_element.innerHTML = data['html'];
                         element.parentNode.replaceChild(element,new_element);
-                        initialize_feature(feature_type,feature_id);
+                        initialize_feature(feature_type,feature_id,data['value'],data['admin']);
                     }
                 }            
             };
@@ -65,9 +97,11 @@ function initialize_elements()
     }
 }
 
+window.onload = initialize_elements;
+
+
 function update_response(feature_type,feature_id,value)
 {
-    document.getElementById("status_info").innerHTML = "Syncing..."
     var jqxhr = $.ajax({
         url:survey_server_url+'/update_response/'+survey_key+'/'+feature_type+'/'+feature_id+(session_key ? '?session_key='+session_key: ''),
         data:{'value':value},
@@ -76,9 +110,8 @@ function update_response(feature_type,feature_id,value)
         .done(function(data) {
         if (data['status'] = 200)
         {
-            document.getElementById("status_info").innerHTML = "Saved.";
-            setTimeout(function() { document.getElementById("status_info").innerHTML = "";}, 2000);
             $("#"+feature_type+"_"+feature_id).html(data['html']);
+            initialize_feature(feature_type,feature_id,data['value']);
         }
     }
     )
@@ -103,6 +136,38 @@ function mouseover_star(feature_id,star,current_value)
                 e.removeClass('yellow');
         }
     }
+}
+
+function init_slider_value(feature_id,value)
+{
+    scale = document.getElementById('scale_'+feature_id);
+    slider = document.getElementById('scale_'+feature_id+'_slider');
+    slider_reference = document.getElementById('scale_'+feature_id+'_slider_reference');
+    var total_width = scale.offsetWidth;    
+    var slider_position = (value+1.0)/2.0*total_width;
+    slider.style.left = Math.floor(slider_position-slider.offsetWidth/2.0)+"px";
+    slider_reference.style.left = slider.style.left;
+}
+
+function update_slider_value(e,feature_id)
+{
+    scale = document.getElementById('scale_'+feature_id);
+    slider = document.getElementById('scale_'+feature_id+'_slider');
+    var offset_x = scale.offsetLeft;
+    var total_width = scale.offsetWidth;
+    var mouse_x = e.clientX-offset_x;
+    var value = mouse_x/total_width*2.0-1.0;
+    update_response('scale',feature_id,value);
+}
+
+function move_slider_value(e,feature_id)
+{
+    scale = document.getElementById('scale_'+feature_id);
+    slider = document.getElementById('scale_'+feature_id+'_slider');
+    var offset_x = scale.offsetLeft;
+    var total_width = scale.offsetWidth;
+    var mouse_x = e.clientX-offset_x;
+    slider.style.left = Math.floor(mouse_x-slider.offsetWidth/2.0)+"px";
 }
 
 function mouseout_star(feature_id,star,current_value)

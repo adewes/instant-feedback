@@ -1,0 +1,13 @@
+{% if admin %}
+<span class="summary">
+    <i class="icon-ok green"></i> {{summary}}
+</span>
+{%else%}
+<span id="check_{{id}}">
+    {%if value == 1 %}
+        <a href="/update_response/vote/{{id}}/?value=0" onclick="update_response('check','{{id}}',0);return false;" title="undo check"><i class="icon-ok green"></i></a>
+    {% else %}
+        <a href="/update_response/vote/{{id}}/?value=1" onclick="update_response('check','{{id}}',1);return false;" title="check"><i class="icon-ok"></i></a>
+    {% endif %}
+</span>
+{%endif%}

@@ -30,6 +30,12 @@
     <link href="/static/feature_styles.css" rel="stylesheet">
     <script src="/static/feedback.js"></script>
 
+    <script>
+    var survey_key = 'fcb0c369539f416dafefac5c09d271cd';
+    var survey_server_url = '';
+    var session_key = 'thomas';
+    </script>
+
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -39,7 +45,7 @@
 
 
   </head>
-  <body data-spy="scroll" onload="initialize_elements();">
+  <body data-spy="scroll">
 
     <div class="container">
 
@@ -69,7 +75,7 @@
       <!-- Jumbotron -->
       <div class="jumbotron" id="welcome">
         <h1>Hi there!</h1>
-        <p class="lead">I'm building a web-application for <strong>static analysis of Python code</strong> and <u>I need your help</u>. </p><p>So if you're a <strong>Python programmer</strong> and if code quality matters to you, I'd love to hear your feedback on the product that I'm planning to build. Just read through the description below and click on the <span class="survey_vote" id="test"></span> icons to indicate if you <u>need</u> a feature or not, or do nothing if you're not sure. Sometimes, I will also ask you for some <span class="survey_input" id="test"></span> OK? <span class="survey_vote" id="understood"></span> </p>
+        <p class="lead">I'm building a web-application for <strong>static analysis of Python code</strong> and <u>I need your help</u>. </p><p>So if you're a <strong>Python programmer</strong> and if code quality matters to you, I'd love to hear your feedback on the product that I'm planning to build. Just read through the description below and click on the <span class="survey_vote" id="test"></span> icons to indicate if you <u>need</u> a feature or not, or do nothing if you're not sure. Sometimes, I will also ask you for some <span class="survey_input" id="test"></span> OK? <span class="survey_check" id="understood"></span> </p>
       </div>
       <h1 id="features">Features</h1>
       <div class="row">
@@ -97,6 +103,21 @@
       </div>
       <h1 id="pricing">Pricing</h1>
         <p>Please state if the following features are important to you: <i class="green icon-thumbs-up"></i> = I need this feature! ; <i class="grey icon-thumbs-down red"></i> = I don't need this feature ; <i class="icon-thumbs-up"></i> / <i class="grey icon-thumbs-down"> = I'm indifferent </i>  </p>
+
+        <table style="margin:0 auto; font-size:1.5em;">
+          <tr>
+            <td style="text-align:right; width:33%;">
+              wenig
+            </td>
+            <td>
+              <span class="survey_scale" id="sslikes"></span>
+            </td>
+            <td style="width:33%">
+              viel
+            </td>
+          </tr>
+        </table>
+
       <div class="row-fluid pricing">
         <div class="col-md-4">
           <div class="widget">
@@ -136,12 +157,6 @@
       <div class="footer">
         <p>&copy; Company 2013</p>
       </div>
-
-      <script>
-      var survey_key = 'fcb0c369539f416dafefac5c09d271cd';
-      var survey_server_url = '';
-      var session_key = 'thomas';
-      </script>
 
 
     </div>

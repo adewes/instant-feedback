@@ -19,7 +19,75 @@ a:hover + div.hovering {
     border-radius:5px;
 }
 
+.scale
+{
+    position:relative !important;
+}
+
+.slider,
+.slider_reference
+{
+    border-radius:10px;
+    border:1px solid #777;
+    position:absolute !important;
+    pointer-events:none;
+    left:190px;
+    top:-1px;
+    width:10px;
+    height:20px;
+    background:#aaa;
+    z-index:2;
+}
+
+.slider_reference
+{
+    background:none;
+    width:1px;
+    margin-left:5px;
+    border:none;
+    border-left:1px dotted #000;
+    z-index:0;
+}
+
+.gradient
+{
+    border-radius:6px;
+    background: #ff5151; /* Old browsers */
+    background: -moz-linear-gradient(left,  #ff5151 0%, #52f952 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#ff5151), color-stop(100%,#52f952)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  #ff5151 0%,#52f952 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  #ff5151 0%,#52f952 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  #ff5151 0%,#52f952 100%); /* IE10+ */
+    background: linear-gradient(to right,  #ff5151 0%,#52f952 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff5151', endColorstr='#52f952',GradientType=1 ); /* IE6-9 */
+    display:block; 
+    height:20px; 
+    width:400px;
+}
+
 .yellow
 {
     color:#fa0;
 }
+
+.green
+{
+  color:#0a0;
+  background:#eee;
+  border-radius:5px;
+  padding:4px;
+}
+
+.red
+{
+  color:#a00;
+  border-radius:5px;
+  background:#eee;
+  padding:4px;
+}
+
+i
+{
+  color:#aaa;
+}
+

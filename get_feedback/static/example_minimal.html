@@ -1,0 +1,45 @@
+<html>
+<head>
+    <style>
+    body
+    {
+        font-size:1.6em;
+        margin:40px;
+    }
+    </style>
+
+    <script src="/static/bootstrap/assets/js/jquery.js"></script>
+    <script src="/static/bootstrap.min/js/bootstrap.min.js"></script>
+    <script src="/static/feedback.js"></script>
+
+    <link href="/static/bootstrap.min/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
+    <link href="/static/feature_styles.css" rel="stylesheet">
+
+    <script>
+    var survey_key = 'fcb0c369539f416dafefac5c09d271cd';
+    var survey_server_url = 'http://localhost:5000';
+    var session_key = '';
+    </script>
+
+</head>
+<body>
+<h1>Hi!</h1>
+<p>I have a small question, is that OK? <span class="survey_vote" id="test">question</span></p>
+<p>How much do you like this site?</p>
+<p style="font-size:4em; text-align:center;"><span class="survey_rate" id="like"></span></p>
+<table style="margin:0 auto; font-size:1.5em;">
+    <tr>
+    <td style="text-align:right; width:33%;">
+        wenig
+    </td>
+    <td>
+        <span class="survey_scale" id="like"></span>
+    </td>
+    <td style="width:33%">
+        viel
+    </td>
+    </tr>
+</table>
+</body>
+</html>
