@@ -1,0 +1,15 @@
+  <h3>Optional</h3>
+  <hr />
+  <div class="form-group">
+    <label for="description">Description</label>
+    <input value="{{field.description}}" name="description" class="form-control" id="description" placeholder="Enter description">
+  </div>
+  <div class="form-group">
+    <label for="html_before">Prefix (accepts HTML)</label>
+    <textarea name="html_before" class="form-control" id="html_before" rows=4>{{field.html_before}}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="html_before">Postfix (accepts HTML)</label>
+    <textarea name="html_after" class="form-control" id="html_after" rows=4>{{field.html_after}}</textarea>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>

@@ -1,0 +1,31 @@
+{% extends "/survey/fields/edit.html" %}
+
+{%block content%}
+<h1>Edit Check field</h1>
+<form action="/edit_field/{{survey_key}}/{{field_type}}/{{field_id}}" method="POST" role="form">
+  <table class="table table-striped">
+  <tr>
+    <td>
+        <label for="icon_down">Down-Icon<sup>*</sup></label>
+    </td>
+    <td>
+        <label for="icon_up">Up-Icon<sup>*</sup></label>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <input value="{{field.icon_down}}" name="icon_down" class="form-control" id="icon_down" placeholder="thumbs-down">
+    </td>
+    <td>
+        <input value="{{field.icon_up}}" name="icon_up" class="form-control" id="icon_up" placeholder="thumbs-up">
+    </td>
+  </tr>
+  </table>
+
+  <p><sup>*</sup>You can put any valid font-awesome icon (just omit the "icon-" part). See <a target="_blank" href="http://fortawesome.github.io/Font-Awesome/icons/">here</a> for a complete list of all possible icons. Have fun <i class="icon-smile"></i></p>
+  <button type="submit" class="btn btn-default">Submit</button>
+
+  {% include '/survey/fields/_standard_edit_fields.html' %}
+</form>
+
+{%endblock%}

@@ -1,0 +1,40 @@
+{% extends "/layouts/modal.html" %}
+
+{%block content%}
+<h1>Results</h1>
+
+<p>
+    {% for i in range(1,(field.n or 5)+1 ) %}
+    <i class="{% if field.icon %}icon-{{field.icon}}{%else%}icon-star{%endif%} {%if summary.average > i-1%}yellow{%endif%}"></i>
+    {%endfor%}
+    &oslash;{{'%0.2g'| format(summary.average)}}<br />
+    ({{summary.n}} respondents)
+</p>
+
+<h2>Distribution</h2>
+<table class="table table-striped">
+<thead>
+    <tr>
+        <th>
+            Rating
+        </th>
+        <th>
+            Number of respondents
+        </th>
+    </tr>
+</thead>
+    {%for i in range(1,(field.n or 5)+1 ) %}
+    <tr>
+        <td>
+        {%for j in range(1,i+1) %}
+            <i class="{% if field.icon %}icon-{{field.icon}}{%else%}icon-star{%endif%} yellow"></i>
+        {%endfor%}
+        </td>
+        <td>
+            {%if i in summary.distribution %}{{summary.distribution.get(i)}}{%else%}0{%endif%}
+        </td>
+    </tr>
+    {%endfor%}
+</table>
+
+{%endblock%}

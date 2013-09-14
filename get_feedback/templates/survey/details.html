@@ -21,6 +21,14 @@
             </thead>
             <tr>
               <td>
+                Admin URL
+              </td>
+              <td>
+                <input class="form-control" value="/login_as/{{survey.user.session}}" />
+              </td>
+            </tr>
+            <tr>
+              <td>
                 Survey key
               </td>
               <td>
@@ -29,16 +37,16 @@
             </tr>
             <tr>
             <td>
-            Responses
+            Respondents
             </td>
             <td>
             {{responses}}
             </td>
             </tr>
             <tr>
-            <td>Links</td>
+            <td>Survey Links <br />(for your convenience)</td>
             <td>
-            <p>{%if survey.survey_url %}<a href="{{survey.survey_url}}">normal view</a> // <a href="{{survey.survey_url}}?show_summary=1">admin view</a>{%else%}No URL given, please provide:{%endif%}
+            <p>{%if survey.survey_url %}<a href="{{survey.survey_url}}">view survey online</a>{%else%}No URL given, please provide:{%endif%}
             </p>
             <form action="/set_survey_url/{{survey.key}}" method="POST">
               <input name="survey_url" class="form-control" style="width:200px; display:inline;" value="{{survey.survey_url}}" />
@@ -60,27 +68,37 @@
             {%endif%}
         </div>
       </div>
-      <div class="row" style="background:#efe; margin:10px; padding:20px; border-radius:20px; border:5px solid #afa;">
+      <div class="row" style="background:#efe; padding:20px; border-radius:20px; border:5px solid #afa;">
       <div class="col-md-12">
       <h2>How to use the survey</h2>
       It's really easy.
       <h3>1.) Copy &amp; Paste Code</h3>
       <p>Just take the following code and put it into the <strong>HEAD</strong> section of your HTML file:</p>
-      <pre>
-&lt;link href="/static/feature_styles.css" rel="stylesheet"&gt;
+      <pre><code>&lt;link href="/static/feature_styles.css" rel="stylesheet"&gt;
 &lt;script src="/static/feedback.js"&gt;&lt;/script&gt;
 &lt;script&gt;
-var session_key = '{{survey.key}}';
-&lt;/script&gt;</pre>
+var survey_key = '{{survey.key}}';
+&lt;/script&gt;</code></pre>
 
       <h3>2.) Make sure the initialization code runs</h3>
 
       <p>
-      <i>feedback.js</i> will call a function called <i>initialize_elements()</i> when the body of your document gets loaded. So, if you overwrite the <i>onload</i> function of the <i>body</i> element, make sure to call <i>initialize_elements()</i> by hand.
+      <span class="code">feedback.js</span> will call a function called <span class="code">initialize_elements()</span> when the body of your document gets loaded. So, if you overwrite the <span class="code">onload</span> function of the <span class="code">body</span> element, make sure to call <span class="code">initialize_elements()</span> by hand.
       </p>
 
-      <h3>2.) Place survey fields</h3>
-
+      <h3>2.) Add feedback elements</h3>
+      <p>
+        Choose from our <a href="">library of elements</a> and add them to your website by putting a corresponding &lt;span&gt; tag in your code. Example for a "vote" element:
+        <pre><code>&lt;span class="survey_vote"&gt;&lt;/span&gt;</code></pre>
+      </p>
+      <h3>3.) Activate elements</h3>
+      <p>
+      To activate the feedback elements you need to visit the website in which they're integrated once while being logged in as survey admin.
+      </p>
+      <h3>4.) Edit elements on the fly</h3>
+      <p>
+      When opening the website while being logged in as survey admin you will be able to edit all elements in-place. Like that you can add descriptions, change default values or add choices.
+      </p>
       </div>
       </div>
 {%endblock%}

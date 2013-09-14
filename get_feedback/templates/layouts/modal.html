@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="/static/bootstrap/assets/ico/favicon.png">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
+    
+    <title>{%block title %}{%endblock%}</title>
+
+    <!-- Bootstrap core CSS -->
+
+    <script src="/static/bootstrap/assets/js/jquery.js"></script>
+    <link href="/static/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+
+    <link href="/static/feedback.css" rel="stylesheet">
+    <script src="/static/feedback.js"></script>
+
+
+    {%block head_extra %}{%endblock%}
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="/static/bootstrap/assets/js/html5shiv.js"></script>
+      <script src="/static/bootstrap/assets/js/respond.min.js"></script>
+    <![endif]-->
+
+
+  </head>
+  <body data-spy="scroll" {%block body_onload%}onload="initialize_elements();"{%endblock%}>
+
+    <div class="container">
+
+      <div id="content">
+      {%if error %}
+      <div class="error">
+      {{error}}
+      </div>
+      {%endif%}
+      {%block content %}{%endblock%}
+      </div>
+
+    </div>
+
+  </body>
+
+</html>

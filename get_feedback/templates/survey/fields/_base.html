@@ -1,0 +1,6 @@
+{%block opening %}{%endblock%}
+{{field.html_before|safe}}{%block main%}{%endblock%}{{field.html_after|safe}}
+{%if is_admin %}
+<a class="survey" data-fancybox-type="iframe" href="/edit_field/{{survey_key}}/{{field_type}}/{{field_id}}"><sup><i class="icon-edit"></i></sup></a>
+{%endif%}
+{%block closing %}{%endblock%}

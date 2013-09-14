@@ -11,7 +11,6 @@
       <div class="jumbotron" id="welcome">
         <h1>Hi there!</h1>
         <p>
-        <a href="" onclick="show_summary = ! show_summary;initialize_elements();if (show_summary)this.innerHTML='show live survey';else this.innerHTML='show results summary';return false;">show results summary</a>
         </p>
         <p class="lead">I'm building a web-application for <strong>static analysis of Python code</strong> and <u>I need your help</u>. </p><p>So if you're a <strong>Python programmer</strong> and if code quality matters to you, I'd love to hear your feedback on the product that I'm planning to build. Just read through the description below and click on the <span class="survey_vote" id="test"></span> icons to indicate if you <u>need</u> a feature or not, or do nothing if you're not sure. Sometimes, I'll also ask you for some <span class="survey_input" id="test"></span> OK? <span class="survey_check" id="understood"></span> </p>
       </div>
@@ -44,7 +43,6 @@
 
       <div class="row pricing">
         <div class="col-md-4">
-          <div class="widget">
             <h2>Business</h2>
             <p class="price"><span class="survey_input" id="pricing_business"></span> $ / month</p>
             <ul>
@@ -64,16 +62,12 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="widget">
             <h2>Startup</h2>
             <p><span class="survey_input" id="pricing_startup"></span> $ / month</p>
-          </div>
         </div>
         <div class="col-md-4">
-          <div class="widget">
             <h2>Team</h2>
             <p><span class="survey_input" id="pricing_team"></span> $ / month</p>
-          </div>
         </div>
       </div>
 {%endblock%}

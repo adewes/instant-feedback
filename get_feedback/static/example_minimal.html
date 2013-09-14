@@ -9,17 +9,14 @@
     </style>
 
     <script src="/static/bootstrap/assets/js/jquery.js"></script>
-    <script src="/static/bootstrap.min/js/bootstrap.min.js"></script>
-    <script src="/static/feedback.js"></script>
-
-    <link href="/static/bootstrap.min/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
-    <link href="/static/feature_styles.css" rel="stylesheet">
+
+    <script src="/static/feedback.js"></script>
+    <link href="/static/feedback.css" rel="stylesheet">
 
     <script>
-    var survey_key = '3de9d6d5fd86404f8b134eb20111a3fb';
+    var survey_key = 'example_minimal';
     var survey_server_url = 'http://localhost:5000';
-    var session_key = '';
     </script>
 
 </head>
@@ -29,18 +26,10 @@
 <p>I have a small question, is that OK? <span class="survey_vote" id="test">question</span></p>
 <p>How much do you like this site?</p>
 <p style="font-size:4em; text-align:center;"><span class="survey_rate" id="like"></span></p>
-<table style="margin:0 auto; font-size:1.5em;">
-    <tr>
-    <td style="text-align:right; width:33%;">
-        wenig
-    </td>
-    <td>
-        <span class="survey_scale" id="like"></span>
-    </td>
-    <td style="width:33%">
-        viel
-    </td>
-    </tr>
-</table>
+        <span class="survey_check" id="like_1"></span><br />
+        <span class="survey_check" id="like_2"></span><br />
+        <span class="survey_check" id="like_3"></span><br />
+        <span class="survey_input" id="some_input"></span><br />
+        <span class="survey_select" id="some_input"></span><br />
 </body>
 </html>

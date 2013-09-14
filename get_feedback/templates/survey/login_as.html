@@ -1,0 +1,13 @@
+{% extends "layouts/base.html" %}
+{% block title %}Admin Link{% endblock %}
+
+{%block content %}
+
+      <div class="row">
+        <div class="col-md-12">
+            <h2>Admin Link</h2>
+            <p>Visiting this website will allow you to modify your surveys and see the results, so please bookmark this site or copy the link below:</p>
+            <input class="form-control" value="/login_as/{{session_key}}" /> 
+        </div>
+      </div>
+{%endblock%}

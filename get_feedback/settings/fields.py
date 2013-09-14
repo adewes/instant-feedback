@@ -10,33 +10,35 @@ class BaseField(object):
         self.attributes = attributes
         return self.attributes
 
-    def provide_context(self,value):
+    def value_context(self,value):
         return value
 
-class Select(BaseField):
+    def edit_context(self):
+        return {}
 
-    template = '_select.html'
+class Select(BaseField):
 
     def default_value(self):
         return ''
 
-    def aggregate(self,responses):
+    def aggregate(self,responses,args = None):
         if not 'choices' in self.attributes:
             return {}
-        frequencies = defaultdict(lambda : defaultdict(lambda :0) )
+        frequencies = defaultdict(lambda : {'n':0,'distribution':defaultdict(lambda :0)} )
         for response in responses:
             if not 'select' in response:
                 continue
             for select_id in response['select']:
-                frequencies[select_id][response['select'][select_id]]+=1
+                frequencies[select_id]['distribution'][response['select'][select_id]]+=1
+                frequencies[select_id]['n']+=1
         for select_id in frequencies:
-            frequencies[select_id] = [(self.attributes['choices'][x[0]][1],x[1]) for x in sorted(frequencies[select_id].items(),key = lambda x:-x[1]) if x[0] < len(self.attributes['choices'])]
+            frequencies[select_id]['distribution'] = [(self.attributes['choices'][x[0]][1],x[1]) for x in sorted(frequencies[select_id]['distribution'].items(),key = lambda x:-x[1]) if x[0] < len(self.attributes['choices'])]
         return frequencies
 
     def parse_input(self,input):
         return int(input)
 
-    def provide_context(self,value):
+    def value_context(self,value):
         d = {'i':value}
         if not 'choices' in self.attributes:
             return d
@@ -54,12 +56,10 @@ class Select(BaseField):
 
 class Check(BaseField):
 
-    template = '_check.html'
-
     def default_value(self):
         return 0
 
-    def aggregate(self,responses):
+    def aggregate(self,responses,args = None):
         counts = defaultdict(lambda : 0)
         for response in responses:
             if not 'check' in response:
@@ -81,12 +81,26 @@ class Check(BaseField):
 
 class Rate(BaseField):
 
-    template = '_rate.html'
-
     def default_value(self):
         return 0
 
-    def aggregate(self,responses):
+    def update_attributes(self,attributes):
+        sanitized_attributes = {}
+        for key,value in attributes.items():
+            sanitized_attributes[key] = value
+        if 'n' in sanitized_attributes:
+            if not sanitized_attributes['n']:
+                del sanitized_attributes['n']
+            else:
+                try:
+                    sanitized_attributes['n'] = int(attributes['n'])
+                except ValueError:
+                    raise ValueError("Invalid value for n:%s" % sanitized_attributes['n'])
+                if sanitized_attributes['n'] > 10:
+                    raise ValueError("Maximum allowed value for n: 10")
+        super(Rate,self).update_attributes(sanitized_attributes)
+
+    def aggregate(self,responses,args = None):
         counts = defaultdict(lambda: {'n':0,'average':0,'distribution':defaultdict(lambda :0)})
         for response in responses:
             if not 'rate' in response:
@@ -104,26 +118,29 @@ class Rate(BaseField):
             input = int(input)
         except ValueError:
             abort(500)
-        if input <= 0 or input > 5:
+        max_value = self.attributes['n'] if 'n' in self.attributes else 5
+        if input <= 0 or input > max_value:
             abort(500)
         return input
 
 class Input(BaseField):
 
-    template = '_input.html'
-
     def default_value(self):
         return ''
 
-    def aggregate(self,responses):
-        frequencies = defaultdict(lambda : defaultdict(lambda :0) )
+    def aggregate(self,responses,args = None):
+        frequencies = defaultdict(lambda : {'truncated':False,'frequencies' :defaultdict(lambda :0),'responses':0} )
         for response in responses:
             if not 'input' in response:
                 continue
             for input_id in response['input']:
-                frequencies[input_id][response['input'][input_id]]+=1
+                frequencies[input_id]['frequencies'][response['input'][input_id]]+=1
+                frequencies[input_id]['responses']+=1
         for input_id in frequencies:
-            frequencies[input_id] = sorted(frequencies[input_id].items(),key = lambda x:-x[1])
+            frequencies[input_id]['frequencies'] = sorted(frequencies[input_id]['frequencies'].items(),key = lambda x:-x[1])
+            if len(frequencies[input_id]['frequencies']) > 100:
+                frequencies[input_id]['truncated'] = True
+                frequencies[input_id]['frequencies'] = frequencies[input_id]['frequencies'][:100]
         return frequencies
 
     def parse_input(self,input):
@@ -132,12 +149,10 @@ class Input(BaseField):
 
 class Scale(BaseField):
 
-    template = '_scale.html'
-
     def default_value(self):
         return 0
 
-    def aggregate(self,responses):
+    def aggregate(self,responses,args = None):
         counts = defaultdict(lambda: {'n':0,'average':0})
         for response in responses:
             if not 'scale' in response:
@@ -160,12 +175,11 @@ class Scale(BaseField):
 
 class Vote(BaseField):
 
-    template = "_vote.html"
-
     def default_value(self):
         return 0
 
-    def aggregate(self,responses):
+
+    def aggregate(self,responses,args = None):
         counts = defaultdict(lambda : {'up':0,'down':0})
         for response in responses:
             if not 'vote' in response:

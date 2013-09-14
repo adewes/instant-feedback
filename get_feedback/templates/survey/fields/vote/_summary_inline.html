@@ -1,0 +1,9 @@
+{%extends '/survey/fields/_base.html' %}
+{% block opening %}<span class="survey_field" id="vote_{{field_id}}">{%endblock%}
+{% block closing %}</span>{%endblock%}
+
+{%block main%}
+    <span class="summary">
+        <i class="{%if 'icon_up' in field%}icon-{{field.icon_up}}{%else%}icon-thumbs-up{%endif%} green"></i> {{summary.up}} <i class="{%if 'icon_down' in field%}icon-{{field.icon_down}}{%else%}icon-thumbs-up{%endif%} red"></i> {{summary.down}}
+    </span>
+{%endblock%}

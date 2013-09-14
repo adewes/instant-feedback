@@ -1,0 +1,9 @@
+{%extends '/survey/fields/_base.html' %}
+{% block opening %}<div class="survey_field" id="input_{{field_id}}" style="display:inline;">{%endblock%}
+{% block closing %}</div>{%endblock%}
+
+{%block main%}
+  <form  style="display:inline;" id="vote_form_{{field_id}}" action="/update_response/input/{{field_id}}" method="POST" onsubmit="update_response('input','{{field_id}}',document.getElementById('vote_form_{{field_id}}').elements['value'].value);return false;" >
+  <input {%if width%}style="width:{{width}}px;"{%endif%} name="value" value="{%if value%}{{value}}{%else%}{{field.default}}{%endif%}" onchange="update_response('input','{{field_id}}',document.getElementById('vote_form_{{field_id}}').elements['value'].value);return false;" />
+  </form>
+{%endblock%}

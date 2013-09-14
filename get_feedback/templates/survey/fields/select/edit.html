@@ -1,0 +1,14 @@
+{% extends "/survey/fields/edit.html" %}
+
+{%block content%}
+<h1>Edit Check field</h1>
+<form action="/edit_field/{{survey_key}}/{{field_type}}/{{field_id}}" method="POST" role="form">
+  <div class="form-group">
+    <label for="description">Choices (one per line)</label>
+    <textarea name="choices" class="form-control" id="choices" rows=4>{{field.choices_str}}</textarea>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+  {% include '/survey/fields/_standard_edit_fields.html' %}
+</form>
+
+{%endblock%}

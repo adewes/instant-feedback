@@ -1,0 +1,15 @@
+{%extends '/survey/fields/_base.html' %}
+{% block opening %}<span class="survey_field" id="vote_{{field_id}}">{%endblock%}
+{% block closing %}</span>{%endblock%}
+
+{%block main%}
+    {%if value == 1 %}
+        <a href="/update_response/vote/{{field_id}}/?value=0" onclick="update_response('vote','{{field_id}}',0);return false;" title="undo upvote"><i class="{%if 'icon_up' in field%}icon-{{field.icon_up}}{%else%}icon-thumbs-up{%endif%} green"></i></a>
+    {%elif value == -1 %}   
+        <a href="/update_response/vote/{{field_id}}/?value=0" onclick="update_response('vote','{{field_id}}',0);return false;" title="undo downvote"><i class="{%if 'icon_down' in field%}icon-{{field.icon_down}}{%else%}icon-thumbs-down{%endif%} red"></i></a>
+    {% else %}
+        <a href="/update_response/vote/{{field_id}}/?value=1" onclick="update_response('vote','{{field_id}}',1);return false;" title="thumbs up"><i class="{%if 'icon_up' in field%}icon-{{field.icon_up}}{%else%}icon-thumbs-up{%endif%}"></i></a> /
+        <a href="/update_response/vote/{{field_id}}/?value=-1" onclick="update_response('vote','{{field_id}}',-1);return false;" title="thumbs down"><i class="{%if 'icon_down' in field%}icon-{{field.icon_down}}{%else%}icon-thumbs-down{%endif%}"></i></a>
+    {% endif %}
+{%endblock%}
+

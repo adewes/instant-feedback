@@ -1,0 +1,12 @@
+{%extends '/survey/fields/_base.html' %}
+{% block opening %}<div class="survey_field" id="input_{{field_id}}" style="display:inline;">{%endblock%}
+{% block closing %}</div>{%endblock%}
+
+{%block main%}
+    {% if 'responses' in summary and summary.responses > 0%}
+    <a class="survey" data-fancybox-type="iframe" href="/view_summary/{{survey_key}}/{{field_type}}/{{field_id}}">({{summary.responses}} answers)
+    </a>
+    {%else%}
+      <span class="summary">(no answers)</span>
+    {%endif%}
+{%endblock%}

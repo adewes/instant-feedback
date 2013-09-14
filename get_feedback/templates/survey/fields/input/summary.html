@@ -1,0 +1,10 @@
+{% extends "/layouts/modal.html" %}
+
+{%block content%}
+<h1>Results</h1>
+<ul>
+{% for value in summary.frequencies %}
+  <li><strong>{{value.1}}</strong>: {{value.0}} </li>
+{%endfor%}
+</ul>
+{%endblock%}

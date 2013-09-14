@@ -1,0 +1,24 @@
+{% extends "/survey/fields/edit.html" %}
+
+{%block content%}
+<h1>Edit Check field</h1>
+<form action="/edit_field/{{survey_key}}/{{field_type}}/{{field_id}}" method="POST" role="form">
+
+  <div class="form-group">
+    <label for="description">Icon</label><sup>*</sup>
+    <input value="{{field.icon}}" name="icon" class="form-control" id="icon" placeholder="arrow">
+  </div>
+
+  <div class="form-group">
+    <label for="description">Number of icons</label><sup>**</sup>
+    <input value="{{field.n}}" name="n" class="form-control" id="n" placeholder="5">
+  </div>
+
+  <p><sup>*</sup>You can put any valid font-awesome icon (just omit the "icon-" part). See <a target="_blank" href="http://fortawesome.github.io/Font-Awesome/icons/">here</a> for a complete list of all possible icons. Have fun <i class="icon-smile"></i></p>
+  <p><sup>**</sup>Maximum: 10</p>
+
+  {% include '/survey/fields/_standard_edit_fields.html' %}
+
+</form>
+
+{%endblock%}

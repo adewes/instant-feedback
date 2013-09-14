@@ -1,0 +1,14 @@
+{% extends "/layouts/modal.html" %}
+
+{%block content%}
+<h1>Results</h1>
+<p>
+{{summary.n}} respondents.
+</p>
+<h2>Distribution</h2>
+<ul>
+{% for value in summary.distribution %}
+  <li><strong>{{value.1}}</strong>: {{value.0}} </li>
+{%endfor%}
+</ul>
+{%endblock%}

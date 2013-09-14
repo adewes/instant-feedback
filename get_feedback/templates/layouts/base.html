@@ -11,19 +11,14 @@
     
     <title>{%block title %}{%endblock%}</title>
 
-    <!-- Bootstrap core CSS -->
+    <!-- Bootstrap core CSS --> 
 
     <script src="/static/bootstrap/assets/js/jquery.js"></script>
-
     <link href="/static/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+
     <link href="/static/justified_nav.css" rel="stylesheet">
 
-    <script src="/static/bootstrap/js/scrollspy.js"></script>
-    <script src="/static/bootstrap/js/tooltip.js"></script>
-    <script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/static/bootstrap/js/popover.js"></script>
-
-    <link href="/static/feature_styles.css" rel="stylesheet">
+    <link href="/static/feedback.css" rel="stylesheet">
     <script src="/static/feedback.js"></script>
 
     {%block head_extra %}{%endblock%}
@@ -53,10 +48,10 @@
           <ul class="nav navbar-nav">
           <li><a href="/index"><i class="icon-list-ul"></i> My Surveys</a></li>
           <li><a href="/new"><i class="icon-bullhorn"></i> New Survey</a></li>
-          <li><a class="active" href="/example"><i class="icon-smile"></i> Show me an example</a></li>
+          <li><a class="active" href="/example"><i class="icon-smile"></i> Example</a></li>
           </ul>
           <ul class="nav navbar-nav pull-right">
-          <li><a href="/login_as/{{request.session}}"><i class="icon-user"></i> admin link (copy &amp; paste to login again!)</a></li>
+          <li><a href="/login_as/{{request.session}}"><i class="icon-user"></i> admin link</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
