@@ -36,6 +36,8 @@ class Select(BaseField):
         return frequencies
 
     def parse_input(self,input):
+        if not input.strip():
+            return None
         return int(input)
 
     def value_context(self,value):

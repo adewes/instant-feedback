@@ -4,7 +4,7 @@
 {%block content %}
 
       <!-- Jumbotron -->
-      <div class="row">
+      <div class="row widget">
         <div class="col-md-12">
             <h2>Survey Details - {{survey.name}}</h2>
             <a href="/export_responses/{{survey.key}}">export results as JSON</a> // <a href="/summary/{{survey.key}}">summary</a> // <a href="/fields/{{survey.key}}">fields</a>  // <a href="/delete/{{survey.key}}"><i class="icon-trash"></i> delete</a>
@@ -24,7 +24,7 @@
                 Admin URL
               </td>
               <td>
-                <input class="form-control" value="/login_as/{{survey.user.session}}" />
+                <input class="form-control" value="http://{{server_name}}/login_as/{{survey.user.session}}" />
               </td>
             </tr>
             <tr>
@@ -68,37 +68,79 @@
             {%endif%}
         </div>
       </div>
-      <div class="row" style="background:#efe; padding:20px; border-radius:20px; border:5px solid #afa;">
-      <div class="col-md-12">
-      <h2>How to use the survey</h2>
-      It's really easy.
-      <h3>1.) Copy &amp; Paste Code</h3>
-      <p>Just take the following code and put it into the <strong>HEAD</strong> section of your HTML file:</p>
-      <pre><code>&lt;link href="/static/feature_styles.css" rel="stylesheet"&gt;
-&lt;script src="/static/feedback.js"&gt;&lt;/script&gt;
-&lt;script&gt;
+      <div class="row widget">
+        <div class="col-md-12">
+        <h1>How to use the survey</h1>
+        <h3><i class="icon-paste"></i> Copy &amp; Paste Code</h3>
+        <p>Just take the following code and put it into the <strong>HEAD</strong> section of your HTML file:</p>
+        <pre><code>&lt;link href="http://{{server_name}}/static/feedback.css" rel="stylesheet"&gt;
+&lt;script src="http://{{server_name}}/static/feedback.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
 var survey_key = '{{survey.key}}';
 &lt;/script&gt;</code></pre>
 
-      <h3>2.) Make sure the initialization code runs</h3>
+        <h3><i class="icon-edit"></i> Add feedback elements</h3>
+        <p>
+          Choose from our library of elements and add them to your website by putting a corresponding &lt;span&gt; tag in your code. Example for a "vote" element:
+          <pre><code>&lt;span class="survey_vote" id="unique_id_for_element"&gt;&lt;/span&gt;</code></pre>
+          The <i>id</i> you choose for your elements must be unique for the corrsponding class of elements. Here is a full list of supported feedback elements:
 
-      <p>
-      <span class="code">feedback.js</span> will call a function called <span class="code">initialize_elements()</span> when the body of your document gets loaded. So, if you overwrite the <span class="code">onload</span> function of the <span class="code">body</span> element, make sure to call <span class="code">initialize_elements()</span> by hand.
-      </p>
+          <table class="table table-striped" style="font-size:1.4em">
+            <thead>
+            <tr>
+                <th style="text-align:right">
+                Element type
+                </th>
+                <th>
+                CSS class
+                </th>
+            </tr>
+            </thead>
+            <tr>
+                <td style="text-align:right">Vote</td>
+                <td><pre><code>&lt;span class="survey_vote" id="some_id"&gt;&lt;/span&gt;</code></pre></td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Check</td>
+                <td><pre><code>&lt;span class="survey_check" id="some_id"&gt;&lt;/span&gt;</code></pre></td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Rate</td>
+                <td><pre><code>&lt;span class="survey_rate" id="some_id"&gt;&lt;/span&gt;</code></pre></td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Input</td>
+                <td><pre><code>&lt;span class="survey_input" id="some_id"&gt;&lt;/span&gt;</code></pre></td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Select</td>
+                <td><pre><code>&lt;span class="survey_select" id="some_id"&gt;&lt;/span&gt;</code></pre></td>
+            </tr>
+        </table>
 
-      <h3>2.) Add feedback elements</h3>
-      <p>
-        Choose from our <a href="">library of elements</a> and add them to your website by putting a corresponding &lt;span&gt; tag in your code. Example for a "vote" element:
-        <pre><code>&lt;span class="survey_vote"&gt;&lt;/span&gt;</code></pre>
-      </p>
-      <h3>3.) Activate elements</h3>
-      <p>
-      To activate the feedback elements you need to visit the website in which they're integrated once while being logged in as survey admin.
-      </p>
-      <h3>4.) Edit elements on the fly</h3>
-      <p>
-      When opening the website while being logged in as survey admin you will be able to edit all elements in-place. Like that you can add descriptions, change default values or add choices.
-      </p>
+        </p>
+        <h3><i class="icon-ok"></i> Open the survey as admin</h3>
+        <p>
+        To initialize and activate the feedback elements, you need to visit the website in which they are embedded once while being logged in as survey admin.
+        </p>
+        <h3><i class="icon-edit"></i> Customize elements on-the-fly</h3>
+        <p>
+        When opening the website while being logged in you will be able to edit all elements in-place. You can add descriptions, change default values or add choices.
+        </p>
+        </div>
       </div>
+
+      <div class="row widget">
+        <div class="col-md-12">
+        <h2>Advanced</h2>
+        
+        <h3>Make sure the initialization code runs</h3>
+
+        <p>
+        <span class="code">feedback.js</span> will call a function called <span class="code">initialize_elements()</span> when the body of your document gets loaded. So, if you overwrite the <span class="code">onload</span> function of the <span class="code">body</span> element, make sure to call <span class="code">initialize_elements()</span> by hand.
+        </p>
+
+
+        </div>
       </div>
 {%endblock%}

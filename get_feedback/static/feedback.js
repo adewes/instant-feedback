@@ -94,7 +94,7 @@ function initialize_elements()
     for(var i=0;i<feature_types.length;i++)
     {
         feature_type = feature_types[i];
-        elements = document.getElementsByClassName('survey_'+feature_type);
+        elements = $('.survey_'+feature_type);
         for(var j=0;j<elements.length;j++)
         {
             element = elements[j];

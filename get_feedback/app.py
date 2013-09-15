@@ -43,9 +43,18 @@ def login_as(session_key):
         request.session = session_key
         return redirect(url_for('index'))
     else:
-        context = {'session_key' : session_key}
+        context = {'server_name':settings.server_name, 'session_key' : session_key}
         response = make_response(render_template("survey/login_as.html",**context))
         return response
+
+@app.route('/logout')
+@with_session()
+@with_user()
+def logout():
+    context = {'server_name':settings.server_name, 'session_key' : request.session}
+    request.session = ''
+    response = make_response(render_template("survey/logout.html",**context))
+    return response
     
 @app.route('/inline_menu/<survey_key>')
 @with_session()
@@ -76,7 +85,7 @@ def index():
 @with_admin()
 def details(survey_key):
     responses = Response.collection.find({'survey_key': request.survey['key']}).count()
-    context = {'survey':request.survey,'responses':responses}
+    context = {'server_name':settings.server_name, 'survey':request.survey,'responses':responses}
     response = make_response(render_template("survey/details.html",**context))
 
     return response
@@ -121,6 +130,7 @@ def export_responses(survey_key):
         exported_responses.append(exported_fields)
 
     response = make_response(json.dumps({'fields':request.survey['fields'],'responses':exported_responses}))
+    response.mimetype='text/json'
 
     return response
 
@@ -298,7 +308,11 @@ def update_response(survey_key,field_type,field_id):
         request.response[field_type] = {}
 
     parsed_value = request.field.parse_input(value)
-    request.response[field_type][field_id] = parsed_value
+    if parsed_value == None and field_id in request.response[field_type]:
+        del request.response[field_type][field_id]
+    else:
+        request.response[field_type][field_id] = parsed_value
+    
     request.response.save()
 
     return _view_field_inline(survey_key,field_type,field_id)

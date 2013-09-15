@@ -15,6 +15,8 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
+server_name = 'feedback.7scientists.com'
+
 db = pymongo.MongoClient().survey
 
 field_types = {
