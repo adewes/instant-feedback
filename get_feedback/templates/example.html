@@ -12,62 +12,63 @@
         <h1>Hi there!</h1>
         <p>
         </p>
-        <p class="lead">I'm building a web-application for <strong>static analysis of Python code</strong> and <u>I need your help</u>. </p><p>So if you're a <strong>Python programmer</strong> and if code quality matters to you, I'd love to hear your feedback on the product that I'm planning to build. Just read through the description below and click on the <span class="survey_vote" id="test"></span> icons to indicate if you <u>need</u> a feature or not, or do nothing if you're not sure. Sometimes, I'll also ask you for some <span class="survey_input" id="test"></span> OK? <span class="survey_check" id="understood"></span> </p>
+        <p class="lead">This is an example survey. It has been created especially for you to show you different feedback elements that you can use for your website.</p>
       </div>
-      <h1 id="features">Features</h1>
-      <div class="row">
+      <div class="row widget">
         <div class="col-md-12">
-        <p>Please state if the following features are important to you: <i class="green icon-thumbs-up"></i> = I need this feature! ; <i class="grey icon-thumbs-down red"></i> = I don't need this feature ; <i class="icon-thumbs-up"></i> / <i class="grey icon-thumbs-down"> = I'm indifferent </i>  </p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="widget">
-          <h2><i class="icon-github"></i> Github Integration </h2>
-            <ul>
-              <li>
-                Login with your Github account. <span class="survey_rate" id="login_with_github"></span>
-              </li>
-              <li>
-                Easily add existing Github repositories.
-              </li>
-              <li>
-                Create issues directly from the application. <span class="survey_select" id="issues"></span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <h1 id="pricing">Pricing</h1>
-        <p>Please state if the following features are important to you: <i class="green icon-thumbs-up"></i> = I need this feature! ; <i class="grey icon-thumbs-down red"></i> = I don't need this feature ; <i class="icon-thumbs-up"></i> / <i class="grey icon-thumbs-down"> = I'm indifferent </i>  </p>
+        <h1>How it works</h1>
+        <p>
+          This tool allows you to integrate simple, intuitive feedback elements directly into your own website. You do this by simpyl pasting a small code snippet into your website's HTML and adding feedback elements in form of simple <i>SPAN</i> tags wherever you want to collect feedback. Like this, you can collect user feedback without interrupting the user experience. 
+        </p>
+        <p style="text-align:center; font-size:2em">
+          How much do you like this? <br/><span class="survey_rate" id="how_much_do_you_like_this"></span>
+        </p>
+        <p>
+          As a bonus, since the feedback elements are realized using very basic HTML they automatically adapt to your page's CSS and integrate seamlessly into your website.
+        </p>
+        <h2>Available elements</h2>
+        <p>
+          As of today, we offer five different feedback elements that you can integrate into your website to collect user feedback. Here they are:
+        </p>
 
-      <div class="row pricing">
-        <div class="col-md-4">
-            <h2>Business</h2>
-            <p class="price"><span class="survey_input" id="pricing_business"></span> $ / month</p>
-            <ul>
-              <li>
-                  feature 1 
-              </li>
-              <li>
-                  feature 2
-              </li>
-              <li>
-                  feature 3
-              </li>
-              <li>
-                  feature 4
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-4">
-            <h2>Startup</h2>
-            <p><span class="survey_input" id="pricing_startup"></span> $ / month</p>
-        </div>
-        <div class="col-md-4">
-            <h2>Team</h2>
-            <p><span class="survey_input" id="pricing_team"></span> $ / month</p>
+        <table class="table table-striped" style="font-size:1.4em">
+            <thead>
+            <tr>
+                <th style="text-align:right">
+                Feedback Action
+                </th>
+                <th>
+                Example
+                </th>
+            </tr>
+            </thead>
+            <tr>
+                <td style="text-align:right">Vote</td>
+                <td><span class="survey_vote" id="widgets_vote"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Check</td>
+                <td><span class="survey_check" id="widgets_check"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Rate</td>
+                <td><span class="survey_rate" id="widgets_rate"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Write</td>
+                <td><span class="survey_input" id="widgets_input"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align:right">Choose</td>
+                <td><span class="survey_select" id="widgets_select"></span></td>
+            </tr>
+        </table>
+
+        <p>As you've maybe noticed, as the survey admin you can click on the <sup><i class="icon-edit"></i></sup> icon next to each element to easily modify it in place. In addition, you can get a full results summary by just clicking on the <a href="" onclick="show_summary = ! show_summary;initialize_elements();return false;">toggle results</a> link in the admin menu above. Try it out!</p>
+
+        <p class="feedback" style="text-align:right; font-size:1.2em; color:#777;">
+          How helpful was this?<span class="survey_rate" id="was_this_helpful"></span>
+        </p>
         </div>
       </div>
 {%endblock%}
