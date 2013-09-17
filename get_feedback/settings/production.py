@@ -1,3 +1,3 @@
 from base import *
 
-server_name = 'feedback.7scientists.com'
+server_url = protocol+'feedback.7scientists.com'

@@ -24,7 +24,7 @@
                 Admin URL
               </td>
               <td>
-                <input class="form-control" value="http://{{server_name}}/login_as/{{survey.user.session}}" />
+                <input class="form-control" value="{{server_url}}/login_as/{{survey.user.session}}" />
               </td>
             </tr>
             <tr>
@@ -75,8 +75,8 @@
         <p>Just take the following code and put it into the <strong>HEAD</strong> section of your HTML file:</p>
         <pre><code>&lt;link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"&gt;
 &lt;script src="http://code.jquery.com/jquery-1.10.1.min.js">&lt;/script&gt;
-&lt;link href="http://{{server_name}}/static/feedback.css" rel="stylesheet"&gt;
-&lt;script src="http://{{server_name}}/static/feedback.js"&gt;&lt;/script&gt;
+&lt;link href="{{server_url}}/static/feedback.css" rel="stylesheet"&gt;
+&lt;script src="{{server_url}}/static/feedback.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
 var survey_key = '{{survey.key}}';
 &lt;/script&gt;</code></pre>
@@ -145,7 +145,7 @@ var survey_key = '{{survey.key}}';
         <h3><a name="access_management">Access Management</a></h3>
 
         <p>
-        You can restrict access to the survey by using <i>response keys</i>. For this, first <a href="/toogle_authorized_keys_only/{{survey.key}}">toggle the permissions</a> to <i>authorized keys only</i>. Now you can define authorized response keys that you can pass out to your respondents: Just give them a URL pointing to your survey site where you append the parameter <strong>?response_key=[your response key]</strong>. Here's an example: <strong>http://{{server_name}}/welcome?response_key=test</strong>.They will then be authenticated and able to give feedback (the response key is saved in the session so it will be remembered for all subsequent visits). Alternatively, you can set the response key by using Javascript, for this just add <strong>var response_key='[your response key]';</strong>.
+        You can restrict access to the survey by using <i>response keys</i>. For this, first <a href="/toogle_authorized_keys_only/{{survey.key}}">toggle the permissions</a> to <i>authorized keys only</i>. Now you can define authorized response keys that you can pass out to your respondents: Just give them a URL pointing to your survey site where you append the parameter <strong>?response_key=[your response key]</strong>. Here's an example: <strong>{{server_url}}/welcome?response_key=test</strong>.They will then be authenticated and able to give feedback (the response key is saved in the session so it will be remembered for all subsequent visits). Alternatively, you can set the response key by using Javascript, for this just add <strong>var response_key='[your response key]';</strong>.
         </p>
 
         </div>

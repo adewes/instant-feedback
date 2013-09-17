@@ -43,7 +43,7 @@ def login_as(session_key):
         request.session = session_key
         return redirect(url_for('index'))
     else:
-        context = {'server_name':settings.server_name, 'session_key' : session_key}
+        context = {'server_url':settings.server_url, 'session_key' : session_key}
         response = make_response(render_template("survey/login_as.html",**context))
         return response
 
@@ -51,7 +51,7 @@ def login_as(session_key):
 @with_session()
 @with_user()
 def logout():
-    context = {'server_name':settings.server_name, 'session_key' : request.session}
+    context = {'server_url':settings.server_url, 'session_key' : request.session}
     request.session = ''
     response = make_response(render_template("survey/logout.html",**context))
     return response
@@ -63,7 +63,7 @@ def logout():
 @with_admin()
 @jsonp()
 def inline_menu(survey_key):
-    context = {'server_name':settings.server_name,'survey':request.survey}
+    context = {'server_url':settings.server_url,'survey':request.survey}
     response = make_response(json.dumps({'html':render_template("_menu.html",**context)}))
     return response
 
@@ -86,7 +86,7 @@ def index():
 @with_admin()
 def details(survey_key):
     responses = Response.collection.find({'survey_key': request.survey['key']}).count()
-    context = {'server_name':settings.server_name, 'survey':request.survey,'responses':responses}
+    context = {'server_url':settings.server_url, 'survey':request.survey,'responses':responses}
     response = make_response(render_template("survey/details.html",**context))
 
     return response
@@ -386,7 +386,7 @@ def _view_field_inline(survey_key,field_type,field_id):
         value = request.response[field_type][field_id]
     value = request.field.value_context(value)
 
-    return json.dumps({'status':200,'value':value,'html':render_template('/survey/fields/'+field_type+'/_field_inline.html',**{'field':request.field.attributes,'is_admin':request.user.is_admin(request.survey),'field_type':field_type,'field_id' : field_id,'value' : value,'survey_key':survey_key,'server_name':settings.server_name })})
+    return json.dumps({'status':200,'value':value,'html':render_template('/survey/fields/'+field_type+'/_field_inline.html',**{'field':request.field.attributes,'is_admin':request.user.is_admin(request.survey),'field_type':field_type,'field_id' : field_id,'value' : value,'survey_key':survey_key,'server_url':settings.server_url })})
 
 @app.route('/view_summary_inline/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
 @with_session()
@@ -402,7 +402,7 @@ def view_summary_inline(survey_key,field_type,field_id):
         abort(500)
 
     summary = generate_summary(request.survey,field_type,field_id)
-    return json.dumps({'status':200,'value':summary,'html':render_template('/survey/fields/'+field_type+'/_summary_inline.html',**{'summary':summary,'field_type':field_type, 'field_id' : field_id,'field':request.field.attributes,'survey_key':survey_key,'server_name':settings.server_name})})
+    return json.dumps({'status':200,'value':summary,'html':render_template('/survey/fields/'+field_type+'/_summary_inline.html',**{'summary':summary,'field_type':field_type, 'field_id' : field_id,'field':request.field.attributes,'survey_key':survey_key,'server_url':settings.server_url})})
 
 
 @app.route('/view_summary/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
