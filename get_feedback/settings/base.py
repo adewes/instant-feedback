@@ -16,6 +16,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 server_name = 'feedback.7scientists.com'
+server_name = 'localhost:5000'
 
 db = pymongo.MongoClient().survey
 

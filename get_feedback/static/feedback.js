@@ -6,8 +6,19 @@ var show_summary = getParameterByName('show_summary');
 var survey_server_url = '';
 var show_menu = true;
 
+function handle_message(e)
+{
+    var data = e.data;
+    if (data['type'] == 'reload_field')
+    {
+        $.fancybox.close();
+        reload_element(data['field_type'],data['field_id'])
+    }
+}
+
     $(document).ready(function() {
         jQuery.support.cors = true;
+        window.onmessage = handle_message;
         $(".survey").fancybox({
         maxWidth    : 600,
         maxHeight   : 400,
@@ -18,11 +29,6 @@ var show_menu = true;
         closeEffect : 'none'
     });
     });
-
-function close_modal_and_reload_element(feature_type,feature_id){
-    $.fancybox.close();
-    reload_element(feature_type,feature_id);
-}
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
