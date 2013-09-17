@@ -4,7 +4,7 @@
 
 {%block main%}
     {% if 'n' in summary and summary.n > 0%}
-    <a class="survey" data-fancybox-type="iframe" href="/view_summary/{{survey_key}}/{{field_type}}/{{field_id}}">({{summary.n}} answers)
+    <a class="survey" data-fancybox-type="iframe" href="http://{{server_name}}/view_summary/{{survey_key}}/{{field_type}}/{{field_id}}">({{summary.n}} answers)
     </a>
     {%else%}
       <span class="summary">(no answers)</span>

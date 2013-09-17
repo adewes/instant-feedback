@@ -3,6 +3,6 @@
 {% block closing %}</span>{%endblock%}
 
 {%block main%}
-    {% for i in range(1,(field.n or 5)+1) %}<a onmouseout="mouseout_star('{{field_id}}',{{i}},{{value}})" onmouseover="mouseover_star('{{field_id}}',{{i}},{{value}})" href="/update_response/rate/{{field_id}}/?value={{i}}" onclick="update_response('rate','{{field_id}}',{{i}});return false;"><i id="rate_{{field_id}}_{{i}}" class="{%if field.icon%}icon-{{field.icon}}{%else%}icon-star{%endif%} {%if value >= i%}yellow{%endif%}"></i></a>{%endfor%}
+    {% for i in range(1,(field.n or 5)+1) %}<a onmouseout="mouseout_star('{{field_id}}',{{i}},{{value}})" onmouseover="mouseover_star('{{field_id}}',{{i}},{{value}})" href="" onclick="update_response('rate','{{field_id}}',{{i}});return false;"><i id="rate_{{field_id}}_{{i}}" class="{%if field.icon%}icon-{{field.icon}}{%else%}icon-star{%endif%} {%if value >= i%}yellow{%endif%}"></i></a>{%endfor%}
 {%endblock%}
 

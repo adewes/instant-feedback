@@ -385,7 +385,7 @@ def _view_field_inline(survey_key,field_type,field_id):
         value = request.response[field_type][field_id]
     value = request.field.value_context(value)
 
-    return json.dumps({'status':200,'value':value,'html':render_template('/survey/fields/'+field_type+'/_field_inline.html',**{'field':request.field.attributes,'is_admin':request.user.is_admin(request.survey),'field_type':field_type,'field_id' : field_id,'value' : value,'survey_key':survey_key })})
+    return json.dumps({'status':200,'value':value,'html':render_template('/survey/fields/'+field_type+'/_field_inline.html',**{'field':request.field.attributes,'is_admin':request.user.is_admin(request.survey),'field_type':field_type,'field_id' : field_id,'value' : value,'survey_key':survey_key,'server_name':settings.server_name })})
 
 @app.route('/view_summary_inline/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
 @with_session()
@@ -401,7 +401,7 @@ def view_summary_inline(survey_key,field_type,field_id):
         abort(500)
 
     summary = generate_summary(request.survey,field_type,field_id)
-    return json.dumps({'status':200,'value':summary,'html':render_template('/survey/fields/'+field_type+'/_summary_inline.html',**{'summary':summary,'field_type':field_type, 'field_id' : field_id,'field':request.field.attributes,'survey_key':survey_key})})
+    return json.dumps({'status':200,'value':summary,'html':render_template('/survey/fields/'+field_type+'/_summary_inline.html',**{'summary':summary,'field_type':field_type, 'field_id' : field_id,'field':request.field.attributes,'survey_key':survey_key,'server_name':settings.server_name})})
 
 
 @app.route('/view_summary/<survey_key>/<field_type>/<field_id>',methods = ['GET'])

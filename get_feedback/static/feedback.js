@@ -7,6 +7,7 @@ var survey_server_url = '';
 var show_menu = true;
 
     $(document).ready(function() {
+        jQuery.support.cors = true;
         $(".survey").fancybox({
         maxWidth    : 600,
         maxHeight   : 400,
