@@ -326,6 +326,7 @@ def update_response(survey_key,field_type,field_id):
 @with_survey()
 @with_admin()
 @with_field()
+@crossdomain(origin='*')
 def edit_field(survey_key,field_type,field_id):
 
     if not field_type in settings.field_types:
