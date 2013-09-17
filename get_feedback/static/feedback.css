@@ -11,16 +11,25 @@
 
 #survey_menu
 {
-  position:absolute !important;
+  position:fixed !important;
   top:0;
+  z-index:9999;
   left:0;
   width:100%;
   padding:6px;
   background:#eee;
-  font-size:18px;
+  font-size:14px;
   color:#000;
   font-family: Arial, Helvetica, sans-serif;
-  border-bottom:4px solid #af0;
+  border-bottom:1px solid #aaa;
+  text-align:center;
+}
+
+#survey_menu h1
+{
+  font-size:18px;
+  color:#000;
+  margin:0 0 10px 0;
 }
 
 span.code
@@ -32,9 +41,9 @@ span.code
 #survey_menu a,
 #survey_menu a:hover,
 #survey_menu a:active
-{
+{ 
   color:#a00;
-  font-size:18px;
+  font-size:14px;
 }
 
 #survey_menu ul
@@ -77,61 +86,25 @@ a:hover + div.hovering {
     display: block;
 }
 
+.survey_input a,
+.survey_rate a,
+.survey_select a,
+.survey_check a,
+.survey_vote a
+{
+  text-decoration:none !important;
+}
+
+.survey_rate a{
+  padding-right:4px !important;
+}
+
 .summary
 {
     background:#eee;
     padding:4px;
     margin:4px;
     border-radius:5px;
-}
-
-.scale
-{
-    position:relative !important;
-    display:inline;
-    width:200px;
-}
-
-.scale .slider
-{
-    position:absolute !important;
-    pointer-events:none;
-    left:190px;
-    top:-15px;
-    width:10px;
-    height:20px;
-    z-index:2;
-}
-
-.gradient
-{
-    border-radius:6px;
-    position:relative !important;
-    background: #ff5151; /* Old browsers */
-    background: -moz-linear-gradient(left,  #ff5151 0%, #52f952 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#ff5151), color-stop(100%,#52f952)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left,  #ff5151 0%,#52f952 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left,  #ff5151 0%,#52f952 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left,  #ff5151 0%,#52f952 100%); /* IE10+ */
-    background: linear-gradient(to right,  #ff5151 0%,#52f952 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff5151', endColorstr='#52f952',GradientType=1 ); /* IE6-9 */
-    display:block; 
-    height:20px; 
-    left:0;
-    width:400px;
-}
-
-.gradient span
-{
-  margin-left:5px;
-  cursor:default;
-}
-
-.gradient span.right
-{
-  position:absolute;
-  right:0;
-  margin-right:5px;
 }
 
 .yellow

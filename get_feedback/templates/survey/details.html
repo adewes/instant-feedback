@@ -44,28 +44,28 @@
             </td>
             </tr>
             <tr>
-            <td>Survey Links <br />(for your convenience)</td>
+            <td>Survey URL <br />(for your convenience)</td>
             <td>
-            <p>{%if survey.survey_url %}<a href="{{survey.survey_url}}">view survey online</a>{%else%}No URL given, please provide:{%endif%}
-            </p>
-            <form action="/set_survey_url/{{survey.key}}" method="POST">
-              <input name="survey_url" class="form-control" style="width:200px; display:inline;" value="{{survey.survey_url}}" />
+            {%if survey.survey_url %}<a href="{{survey.survey_url}}">view survey online</a>{%else%}No URL given, please provide:{%endif%}
+            <form class="form-inline" action="/set_survey_url/{{survey.key}}" method="POST">
+              <input name="survey_url" class="form-control" style="width:200px;" value="{{survey.survey_url}}" />
               <button type="submit" class="btn">Update URL</button>
             </form>
  
             </td>
             </tr>
-            </table>
-            {%if False %}
-            <p>Access: {%if survey.authorized_keys_only %}authorized session keys only{%else%}open for everyone{%endif%} <a href="/toogle_authorized_keys_only/{{survey.key}}">(toggle)</a></p>
-            <p>Authorized keys: {{survey.authorized_keys|length}} {%if survey.authorized_keys|length < 100 %}{{survey.authorized_keys|join(", ")}}{%endif%} <a href="/clear_authorized_keys/{{survey.key}}">(clear)</a></p>
-            <p>
-            <form action="/authorize_session_key/{{survey.key}}" method="GET">
-              <input name="session_key" value="" />
+            <tr>
+            <td colspan=2><h2>Access Management</h2><a href="#access_management">How does this work?</a></td></tr>
+            <tr><td>Permissions</td><td>{%if survey.authorized_keys_only %}authorized keys only{%else%}open for everyone{%endif%} <a href="/toogle_authorized_keys_only/{{survey.key}}">(toggle)</a></td></tr>
+            {% if survey.authorized_keys_only %}
+            <tr><td>Authorized keys<br /><a href="/clear_authorized_keys/{{survey.key}}">(clear all keys)</a></td><td>{{survey.authorized_keys|length}} keys: <ul>{%for key in survey.authorized_keys %}<li>{{key}} (<a href="/remove_authorized_key/{{survey.key}}?response_key={{key}}">remove</a>)</li>{%endfor%}</ul> 
+            <form class="form-inline" action="/authorize_key/{{survey.key}}" method="GET">
+              <input class="form-control" style="width:200px" name="response_key" value="" />
               <button type="submit" class="btn">Add authorized key</button>
             </form>
-            </p>
+            </td></tr>  
             {%endif%}
+            </table>
         </div>
       </div>
       <div class="row widget">
@@ -73,7 +73,9 @@
         <h1>How to use the survey</h1>
         <h3><i class="icon-paste"></i> Copy &amp; Paste Code</h3>
         <p>Just take the following code and put it into the <strong>HEAD</strong> section of your HTML file:</p>
-        <pre><code>&lt;link href="http://{{server_name}}/static/feedback.css" rel="stylesheet"&gt;
+        <pre><code>&lt;link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"&gt;
+&lt;script src="http://code.jquery.com/jquery-1.10.1.min.js">&lt;/script&gt;
+&lt;link href="http://{{server_name}}/static/feedback.css" rel="stylesheet"&gt;
 &lt;script src="http://{{server_name}}/static/feedback.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
 var survey_key = '{{survey.key}}';
@@ -132,14 +134,19 @@ var survey_key = '{{survey.key}}';
 
       <div class="row widget">
         <div class="col-md-12">
-        <h2>Advanced</h2>
+        <h2>Advanced Topics</h2>
         
-        <h3>Make sure the initialization code runs</h3>
+        <h3>Initialization</h3>
 
         <p>
         <span class="code">feedback.js</span> will call a function called <span class="code">initialize_elements()</span> when the body of your document gets loaded. So, if you overwrite the <span class="code">onload</span> function of the <span class="code">body</span> element, make sure to call <span class="code">initialize_elements()</span> by hand.
         </p>
 
+        <h3><a name="access_management">Access Management</a></h3>
+
+        <p>
+        You can restrict access to the survey by using <i>response keys</i>. For this, first <a href="/toogle_authorized_keys_only/{{survey.key}}">toggle the permissions</a> to <i>authorized keys only</i>. Now you can define authorized response keys that you can pass out to your respondents: Just give them a URL pointing to your survey site where you append the parameter <strong>?response_key=[your response key]</strong>. Here's an example: <strong>http://{{server_name}}/welcome?response_key=test</strong>.They will then be authenticated and able to give feedback (the response key is saved in the session so it will be remembered for all subsequent visits). Alternatively, you can set the response key by using Javascript, for this just add <strong>var response_key='[your response key]';</strong>.
+        </p>
 
         </div>
       </div>

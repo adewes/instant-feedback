@@ -61,8 +61,9 @@ def logout():
 @with_user()
 @with_survey()
 @with_admin()
+@jsonp()
 def inline_menu(survey_key):
-    context = {'survey':request.survey}
+    context = {'server_name':settings.server_name,'survey':request.survey}
     response = make_response(json.dumps({'html':render_template("_menu.html",**context)}))
     return response
 
@@ -123,13 +124,14 @@ def export_responses(survey_key):
     exported_responses = []
 
     for response in responses:
-        exported_fields = {'created_at' : response['_created_at'].strftime("%s"),'updated_at': response['_updated_at'].strftime("%s")}
+        exported_fields = {'created_at' : response['_created_at'].strftime("%s"),'updated_at': response['_updated_at'].strftime("%s"),'response_key':response['response_key']}
         for field_type in settings.field_types:
             if field_type in response:
                 exported_fields[field_type] = response[field_type]
         exported_responses.append(exported_fields)
-
-    response = make_response(json.dumps({'fields':request.survey['fields'],'responses':exported_responses}))
+    opts = {}
+    opts['indent'] = 4
+    response = make_response(json.dumps({'fields':request.survey['fields'],'responses':exported_responses},**opts))
     response.mimetype='text/json'
 
     return response
@@ -238,22 +240,22 @@ def set_survey_url(survey_key):
         return redirect(url_for("details",survey_key = request.survey['key']))
 
 
-@app.route('/authorize_session_key/<survey_key>',methods = ['GET'])
+@app.route('/authorize_key/<survey_key>',methods = ['GET'])
 @with_session()
 @with_user()
 @with_survey()
 @with_admin()
-def authorize_session_key(survey_key):
+def authorize_key(survey_key):
 
-    if not "session_key" in request.args:
+    if not "response_key" in request.args:
         return json.dumps({'status':404,'message' : 'session_key parameter is missing!'})
 
-    session_key = request.args["session_key"]
+    response_key = request.args["response_key"]
     
     if not 'authorized_keys' in request.survey:
         request.survey['authorized_keys'] = []
-    if not session_key in request.survey['authorized_keys']:
-        request.survey['authorized_keys'].append(session_key)
+    if not response_key in request.survey['authorized_keys']:
+        request.survey['authorized_keys'].append(response_key)
 
     request.survey.save()
     if request_wants_json():
@@ -261,22 +263,22 @@ def authorize_session_key(survey_key):
     else:
         return redirect(url_for("details",survey_key = request.survey['key']))
 
-@app.route('/remove_session_key/<survey_key>',methods = ['GET'])
+@app.route('/remove_authorized_key/<survey_key>',methods = ['GET'])
 @with_session()
 @with_user()
 @with_survey()
 @with_admin()
-def remove_session_key(survey_key):
+def remove_authorized_key(survey_key):
 
-    if not "session_key" in request.args:
-        return json.dumps({'status':404,'message' : 'session_key parameter is missing!'})
+    if not "response_key" in request.args:
+        return json.dumps({'status':404,'message' : 'response_key parameter is missing!'})
 
-    session_key = request.args["session_key"]
+    response_key = request.args["response_key"]
 
-    if not 'authorized_keys' in request.survey or not session_key in request.survey['authorized_keys']:
-        return json.dumps({'status':404,'message' : 'session_key %s not in list of authorized_keys!' % session_key})
+    if not 'authorized_keys' in request.survey or not response_key in request.survey['authorized_keys']:
+        return json.dumps({'status':404,'message' : 'session_key %s not in list of authorized_keys!' % response_key})
 
-    request.survey['authorized_keys'].remove(session_key)
+    request.survey['authorized_keys'].remove(response_key)
     request.survey.save()
 
     if request_wants_json():
@@ -290,9 +292,10 @@ def remove_session_key(survey_key):
 @with_survey()
 @with_response()
 @with_field()
+@jsonp()
 def update_response(survey_key,field_type,field_id):
 
-    if request.survey['authorized_keys_only'] and not request.response['session'] in request.survey['authorized_keys']:
+    if request.survey['authorized_keys_only'] and not request.response['response_key'] in request.survey['authorized_keys'] and not request.user.is_admin(request.survey):
         return json.dumps({'status':403,'html': ''})
 
     if request.method == 'POST':
@@ -364,7 +367,7 @@ def generate_summary(survey,field_type,field_id):
 
 def _view_field_inline(survey_key,field_type,field_id):
 
-    if request.survey['authorized_keys_only'] and not request.response['session'] in request.survey['authorized_keys']:
+    if request.survey['authorized_keys_only'] and not request.response['response_key'] in request.survey['authorized_keys'] and not request.user.is_admin(request.survey):
         return json.dumps({'status':403,'html': ''})
 
     try:
@@ -391,6 +394,7 @@ def _view_field_inline(survey_key,field_type,field_id):
 @with_admin()
 @with_response()
 @with_field()
+@jsonp()
 def view_summary_inline(survey_key,field_type,field_id):
 
     if not field_type in settings.field_types:
@@ -422,6 +426,7 @@ def view_summary(survey_key,field_type,field_id):
 @with_user()
 @with_survey()
 @with_response()
+@jsonp()
 def view_field_inline(survey_key,field_type,field_id):
     return _view_field_inline(survey_key,field_type,field_id)
 

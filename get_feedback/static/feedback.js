@@ -1,7 +1,7 @@
 
 var feature_types = ['vote','input','rate','scale','check','select'];
 var survey_key = null;
-var session_key = null;
+var response_key = getParameterByName('response_key');
 var show_summary = getParameterByName('show_summary');
 var survey_server_url = '';
 var show_menu = true;
@@ -39,15 +39,15 @@ function initialize_menu()
 
     function adapt_body_margin()
     {
-        $('body').css("margin-top",($('#survey_menu').height()+20)+'px');
+        $('body').css("margin-top",($('#survey_menu').height()+40)+'px');
     }
     var jqxhr = $.ajax({
-        url:survey_server_url+'/inline_menu/'+survey_key+(session_key ? '?session_key='+session_key: ''),
+        url:survey_server_url+'/inline_menu/'+survey_key+(response_key ? '?response_key='+response_key: ''),
         data:{},
         type:'GET',
         cache: false,
-        dataType:'json'})
-        .done(function(data) {
+        dataType: 'jsonp',
+        success:function(data) {
         if (data['status'] = 200)
         {
             if ($('#survey_menu').length)
@@ -58,29 +58,28 @@ function initialize_menu()
             adapt_body_margin();
         }
     }
-    )
-
+        })
 }
 
 function initialize_element(element,feature_type,feature_id)
 {
     var jqxhr = $.ajax({
-    url:survey_server_url+(show_summary ? '/view_summary_inline/' : '/view_field_inline/')+survey_key+'/'+feature_type+'/'+feature_id+(session_key ? '?session_key='+session_key: ''),
+    url:survey_server_url+(show_summary ? '/view_summary_inline/' : '/view_field_inline/')+survey_key+'/'+feature_type+'/'+feature_id+(response_key ? '?response_key='+response_key: ''),
     data:{},
     cache: false,
     type:'GET',
-    dataType:'json'})
-    .done(
+    dataType: 'jsonp',
+    success:
     function(data) {
-            if (data['status'] = 200)
-            {
-                var new_element = element;
-                new_element.innerHTML = data['html'];
-                element.parentNode.replaceChild(element,new_element);
-                initialize_feature(feature_type,feature_id,data['value'],data['admin']);
-            }
-        }          
-        );
+                if (data['status'] = 200)
+                {
+                    var new_element = element;
+                    new_element.innerHTML = data['html'];
+                    element.parentNode.replaceChild(element,new_element);
+                    initialize_feature(feature_type,feature_id,data['value'],data['admin']);
+                }
+            }    
+        })
 }
 
 function initialize_elements()
@@ -111,12 +110,12 @@ window.onload = initialize_elements;
 function reload_element(feature_type,feature_id)
 {
     var jqxhr = $.ajax({
-    url:survey_server_url+(show_summary ? '/view_summary_inline/' : '/view_field_inline/')+survey_key+'/'+feature_type+'/'+feature_id+(session_key ? '?session_key='+session_key: ''),
+    url:survey_server_url+(show_summary ? '/view_summary_inline/' : '/view_field_inline/')+survey_key+'/'+feature_type+'/'+feature_id+(response_key ? '?response_key='+response_key: ''),
     data:{},
     cache: false,
     type:'GET',
-    dataType:'json'})
-    .done(
+    dataType:'jsonp',
+    success:
         function(data) {
             if (data['status'] = 200)
             {
@@ -124,46 +123,26 @@ function reload_element(feature_type,feature_id)
                 initialize_feature(feature_type,feature_id,data['value']);
             }
         }          
-        );    
+    })
 }
 
 function update_response(feature_type,feature_id,value)
 {
     var jqxhr = $.ajax({
-        url:survey_server_url+'/update_response/'+survey_key+'/'+feature_type+'/'+feature_id+(session_key ? '?session_key='+session_key: ''),
+        url:survey_server_url+'/update_response/'+survey_key+'/'+feature_type+'/'+feature_id+(response_key ? '?response_key='+response_key: ''),
         data:{'value':value},
-        type:'POST',
-	cache: false,
-        dataType:'json'})
-        .done(function(data) {
+        type:'GET',
+    	cache: false,
+        dataType:'jsonp',
+        success:function(data) {
         if (data['status'] = 200)
         {
             $("#"+feature_type+"_"+feature_id).html(data['html']);
             initialize_feature(feature_type,feature_id,data['value']);
         }
     }
-    )
-}
 
-function update_field(feature_type,feature_id)
-{
-    var attributes =$('#'+feature_type+'_'+feature_id+'_form').serialize();
-    $('#'+feature_type+'_'+feature_id+'_modal').modal('hide').on('hidden.bs.modal', function(){
-        var jqxhr = $.ajax({
-            url:survey_server_url+'/update_field/'+survey_key+'/'+feature_type+'/'+feature_id,
-            data:{'attributes':attributes},
-            type:'POST',
-	    cache: false,
-            dataType:'json'})
-            .done(function(data) {
-                if (data['status'] = 200)
-                {
-                    $("#"+feature_type+"_"+feature_id).html(data['html']);
-                    initialize_feature(feature_type,feature_id,data['value']);
-               }
-            });
-        }
-    );
+    });
 }
 
 /*helper functions for the rate element */

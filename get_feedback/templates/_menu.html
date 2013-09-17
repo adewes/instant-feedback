@@ -1,13 +1,11 @@
 <div class="survey_menu" id="survey_menu">
+<!--    <h1>Survey Admin - {{survey.name}}</h1>-->
     <ul>
-        <li>
-        Survey Admin - "{{survey.name}}"
-        </li>
         <li>
             <a href="" onclick="show_summary = ! show_summary;initialize_elements();return false;">toggle results</a>
         </li>
         <li>
-            <a href="/details/{{survey.key}}">go to admin page</a>
+            <a href="http://{{server_name}}/details/{{survey.key}}">go to admin page</a>
         </li>
     </ul>
 </div>
