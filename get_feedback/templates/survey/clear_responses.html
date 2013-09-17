@@ -1,0 +1,15 @@
+{% extends "layouts/base.html" %}
+{% block title %}Delete Survey{% endblock %}
+
+{%block content %}
+
+      <!-- Jumbotron -->
+      <div class="row widget">
+        <div class="col-md-12">
+          <p>
+          Are you sure that you want to clear all responses?<br /> <strong>There is no undo!</strong><br />
+          <a class="btn btn-info" href="/details/{{survey.key}}">No, get me out of here!</a> <a href="/clear_responses/{{survey.key}}?confirm=1" class="btn btn-danger">Yes, clear responses!</a>
+          </p>
+      </div>
+      </div>
+{%endblock%}

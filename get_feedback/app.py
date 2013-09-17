@@ -174,6 +174,18 @@ def delete(survey_key):
     response = make_response(render_template("survey/delete.html",**context))
     return response
 
+@app.route('/clear_responses/<survey_key>',methods = ['GET'])
+@with_session()
+@with_user()
+@with_survey()
+@with_admin()
+def clear_responses(survey_key):
+    context = {'survey':request.survey}
+    if 'confirm' in request.args:
+        Response.collection.remove({'survey_key':request.survey['key']})
+        return redirect(url_for("details",survey_key = request.survey['key']))
+    response = make_response(render_template("survey/clear_responses.html",**context))
+    return response
 
 
 @app.route('/new',methods = ['GET','POST'])
