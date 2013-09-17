@@ -367,10 +367,6 @@ def generate_summary(survey,field_type,field_id):
 
     responses = list(Response.collection.find({'survey_key' : survey['key']}))
 
-    if not len(responses):
-        abort(404)
-
-
     summary = request.field.aggregate(responses,args = request.args)
 
     if not field_id in summary:

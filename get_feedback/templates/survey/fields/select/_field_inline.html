@@ -8,6 +8,6 @@
       {% for choice in field.choices %}
         <option {%if value.i == choice.0 %}selected{%endif%} value="{{choice.0}}">{{choice.1}}</option>
       {%endfor%}
-    </select>
+    </select>{% if value.i != '' %}<i class="icon-ok green"></i>{%endif%}
 {%endblock%}
 
