@@ -8,7 +8,8 @@ var show_menu = true;
 
 function handle_message(e)
 {
-    var data = e.data;
+    e = e || window.event;
+    var data = eval(JSON.parse(e.data));
     if (data['type'] == 'reload_field')
     {
         $.fancybox.close();

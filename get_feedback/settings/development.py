@@ -1,4 +1,4 @@
 from base import *
 
-server_name = 'localhost:5000'
+server_name = '192.168.56.1:5000'
 
