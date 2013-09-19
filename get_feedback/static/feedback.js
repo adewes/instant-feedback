@@ -52,6 +52,7 @@ function initialize_menu()
     var jqxhr = $.ajax({
         url:survey_server_url+'/inline_menu/'+survey_key+(response_key ? '?response_key='+response_key: ''),
         data:{},
+        xhrFields: {withCredentials: true},
         type:'GET',
         cache: false,
         dataType: 'jsonp',
@@ -75,6 +76,7 @@ function initialize_element(element,feature_type,feature_id)
     url:survey_server_url+(show_summary ? '/view_summary_inline/' : '/view_field_inline/')+survey_key+'/'+feature_type+'/'+feature_id+(response_key ? '?response_key='+response_key: ''),
     data:{},
     cache: false,
+    xhrFields: {withCredentials: true},
     type:'GET',
     dataType: 'jsonp',
     success:
@@ -122,6 +124,7 @@ function reload_element(feature_type,feature_id)
     data:{},
     cache: false,
     type:'GET',
+    xhrFields: {withCredentials: true},
     dataType:'jsonp',
     success:
         function(data) {
@@ -141,6 +144,7 @@ function update_response(feature_type,feature_id,value)
         data:{'value':value},
         type:'GET',
     	cache: false,
+        xhrFields: {withCredentials: true},
         dataType:'jsonp',
         success:function(data) {
         if (data['status'] = 200)
