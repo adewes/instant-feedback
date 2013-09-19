@@ -46,7 +46,7 @@ function check_cookies()
                 if (last_visits == visits)
                 {
                     $.fancybox({        
-                        height: '480px',
+                        height: '300px',
                         width:'640px',
                         openEffect  : 'none',
                         closeEffect : 'none',
