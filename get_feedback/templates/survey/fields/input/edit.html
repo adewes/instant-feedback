@@ -7,6 +7,13 @@
     <label for="default">Default Value</label>
     <input value="{{field.default}}" name="default" class="form-control" id="default" placeholder="Enter description">
   </div>
+  <div class="form-group">
+    <label for="default">Field Type</label><br />
+    <select name="field_type">
+        <option value="input" {%if field.field_type == 'input' %}selected{%endif%}>single-line input field</option>
+        <option value="textarea" {%if field.field_type == 'textarea' %}selected{%endif%}>text area</option>
+    </select>
+  </div>
   <button type="submit" class="btn btn-default">Submit</button>
 
   {% include '/survey/fields/_standard_edit_fields.html' %}

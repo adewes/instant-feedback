@@ -4,6 +4,10 @@
 
 {%block main%}
   <form  style="display:inline;" id="vote_form_{{field_id}}" action="/update_response/input/{{field_id}}" method="POST" onsubmit="update_response('input','{{field_id}}',document.getElementById('vote_form_{{field_id}}').elements['value'].value);return false;" >
-  <input name="value" value="{%if value%}{{value}}{%else%}{{field.default}}{%endif%}" onchange="update_response('input','{{field_id}}',document.getElementById('vote_form_{{field_id}}').elements['value'].value);return false;" />{% if value %} <i class="icon-ok green"></i>{%endif%}
+  {% if not 'field_type' in field or field.field_type == 'input' %}
+  <input name="value" value="{%if value%}{{value}}{%else%}{{field.default}}{%endif%}" onchange="update_response('input','{{field_id}}',document.getElementById('vote_form_{{field_id}}').elements['value'].value);return false;" />
+  {%elif field.field_type == 'textarea' %}
+  <textarea rows=4 name="value" onchange="update_response('input','{{field_id}}',document.getElementById('vote_form_{{field_id}}').elements['value'].value);return false;">{%if value%}{{value}}{%else%}{{field.default}}{%endif%}</textarea>
+  {%endif%}{% if value %} <i class="icon-ok green"></i>{%endif%}
   </form>
 {%endblock%}
