@@ -305,6 +305,7 @@ def remove_authorized_key(survey_key):
 @with_response()
 @with_field()
 @jsonp()
+@crossdomain(origin='*')
 def update_response(survey_key,field_type,field_id):
 
     if request.survey['authorized_keys_only'] and not request.response['response_key'] in request.survey['authorized_keys'] and not request.user.is_admin(request.survey):
@@ -404,6 +405,7 @@ def _view_field_inline(survey_key,field_type,field_id):
 @with_response()
 @with_field()
 @jsonp()
+@crossdomain(origin='*')
 def view_summary_inline(survey_key,field_type,field_id):
 
     if not field_type in settings.field_types:
@@ -420,6 +422,7 @@ def view_summary_inline(survey_key,field_type,field_id):
 @with_admin()
 @with_response()
 @with_field()
+@crossdomain(origin='*')
 def view_summary(survey_key,field_type,field_id):
 
     if not field_type in settings.field_types:
@@ -436,6 +439,7 @@ def view_summary(survey_key,field_type,field_id):
 @with_survey()
 @with_response()
 @jsonp()
+@crossdomain(origin='*')
 def view_field_inline(survey_key,field_type,field_id):
     return _view_field_inline(survey_key,field_type,field_id)
 
