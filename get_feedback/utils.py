@@ -33,7 +33,8 @@ def crossdomain(origin=None, methods=None, headers=None,
                 resp = current_app.make_default_options_response()
             else:
                 resp = f(*args, **kwargs)
-                print resp
+                if isinstance(resp,str):
+                    resp = make_response(resp)
 
             h = resp.headers
 
