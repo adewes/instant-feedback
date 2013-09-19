@@ -179,7 +179,7 @@ def with_response():
         
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if 'response_key' in request.args and request.args['response_key'] and request.survey['authorized_keys_only']:
+            if 'response_key' in request.args and request.args['response_key']:
                 response_key = request.args['response_key']
                 response = Response.collection.find_one({'survey_key' : request.survey['key'],'response_key':response_key},sort = [('_updated_at',pymongo.DESCENDING)])
 

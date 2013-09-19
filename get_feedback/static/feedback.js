@@ -15,9 +15,53 @@ function handle_message(e)
         $.fancybox.close();
         reload_element(data['field_type'],data['field_id'])
     }
+    else if (data['type'] == 'get_cookie')
+    {
+        $.fancybox.close();
+        window.location.href =survey_server_url+'/initialize_cookie/'+survey_key+'?redirect_to='+encodeURIComponent(window.location.href);
+    }
 }
 
-    $(document).ready(function() {
+function check_cookies()
+{
+    var last_visits = null;
+    var request_params = {
+        url:survey_server_url+'/visits',
+        data:{},
+        xhrFields: {withCredentials: true},
+        type:'GET',
+        cache: false,
+        dataType: 'jsonp',
+        success:function(data) {
+        if (data['status'] = 200)
+        {
+            visits = data['visits']
+            if (!last_visits)
+            {
+                last_visits = visits
+                $.ajax(request_params);
+            }
+            else
+            {
+                if (last_visits == visits)
+                {
+                    $.fancybox({        
+                        height: '480px',
+                        width:'640px',
+                        openEffect  : 'none',
+                        closeEffect : 'none',
+                        type        :'iframe',
+                        href        :survey_server_url+'/cookie_notice/'+survey_key}).trigger('click');
+                }
+            }
+        }
+    }
+        }
+    var jqxhr = $.ajax(request_params);
+
+}
+
+$(document).ready(function() {
         jQuery.support.cors = true;
         window.onmessage = handle_message;
         $(".survey").fancybox({
@@ -28,8 +72,9 @@ function handle_message(e)
         closeClick  : false,
         openEffect  : 'none',
         closeEffect : 'none'
-    });
-    });
+        });
+        check_cookies();
+});
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
