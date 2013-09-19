@@ -42,6 +42,7 @@ def crossdomain(origin=None, methods=None, headers=None,
             h['Access-Control-Allow-Credentials'] = 'true'
             h['Access-Control-Allow-Methods'] = get_methods()
             h['Access-Control-Max-Age'] = str(max_age)
+            h['P3P'] = 'CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"'
             if headers is not None:
                 h['Access-Control-Allow-Headers'] = headers
             return resp

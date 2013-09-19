@@ -446,6 +446,7 @@ def view_field_inline(survey_key,field_type,field_id):
 @app.route(r'/feedback.js',methods = ['GET'])
 @with_session()
 @with_user()
+@crossdomain(origin='*')
 def feedback_js():
     return redirect("/static/feedback.js")
 
