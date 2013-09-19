@@ -439,5 +439,11 @@ def view_summary(survey_key,field_type,field_id):
 def view_field_inline(survey_key,field_type,field_id):
     return _view_field_inline(survey_key,field_type,field_id)
 
+@app.route(r'/feedback.js',methods = ['GET'])
+@with_session()
+@with_user()
+def feedback_js():
+    return redirect("/static/feedback.js")
+
 if __name__ == '__main__':
     app.run(debug = True,host = '0.0.0.0')
