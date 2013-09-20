@@ -188,7 +188,7 @@ def with_response():
                     response.save()
 
             else:
-                response_key = ''
+                response_key = uuid.uuid4().hex
                 response = Response.collection.find_one({'survey_key' : request.survey['key'],'session':request.session},sort = [('_updated_at',pymongo.DESCENDING)])
 
             if not response:

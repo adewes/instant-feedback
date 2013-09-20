@@ -26,7 +26,7 @@ function check_cookies()
 {
     var last_visits = null;
     var request_params = {
-        url:survey_server_url+'/visits',
+        url:survey_server_url+'/visits/'+survey_key,
         data:{},
         xhrFields: {withCredentials: true},
         type:'GET',
@@ -43,20 +43,34 @@ function check_cookies()
             }
             else
             {
-                if (last_visits == visits)
+                if (last_visits == visits && ! response_key)
                 {
-                    $.fancybox({        
-                        height: '300px',
-                        width:'640px',
-                        openEffect  : 'none',
-                        closeEffect : 'none',
-                        type        :'iframe',
-                        href        :survey_server_url+'/cookie_notice/'+survey_key}).trigger('click');
+                    //the browser seems to block cross-domain cookies, so we'll assign a random response-key by hand and attach it to the URL...
+                    var jqxhr = $.ajax({
+                        url:survey_server_url+'/get_response_key/'+survey_key,
+                        data:{},
+                        xhrFields: {withCredentials: true},
+                        type:'GET',
+                        cache: false,
+                        dataType: 'jsonp',
+                        success:function(data) {
+                            if (data['status'] = 200)
+                            {
+                                var location = window.location;
+                                if (location.search)
+                                    window.location.search = location.search+"&response_key="+data['response_key'];
+                                else
+                                    window.location.search = 'response_key='+data['response_key'];
+                            }
+                        }
+                        })                
                 }
             }
         }
     }
         }
+    if (response_key)//if there's a response key we don't need cookies
+        return;
     var jqxhr = $.ajax(request_params);
 
 }

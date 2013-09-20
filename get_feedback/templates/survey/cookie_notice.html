@@ -1,7 +1,10 @@
 {% extends '/layouts/modal.html' %}
 {% block content %}
-<h2>Warning</h2>
+<h2>Cookie Notice</h2>
 <p style="padding:40px; font-size:1.4em">
-    This page contains a survey which requires cross-domain cookies (that seem to be disabled in your browser) in order to work correctly. Please click on the following link to  <a href="#" onclick="var data=JSON.stringify({'type' :'get_cookie'});parent.window.postMessage(data,'*');return false;">generate a session cookie</a>. Sorry for the inconvenience!
+    This page contains a survey tool that uses cross-domain cookies. Your browser seems to block these cookies. Please click on the following link to  <a href="#" onclick="var data=JSON.stringify({'type' :'get_cookie'});parent.window.postMessage(data,'*');return false;">generate a session cookie</a>. Sorry for the inconvenience!
+</p>
+<p>
+    BTW: The cookie is used only to automatically reload your entries if you should reload the page. We do not record any information (such as IP address) about you.
 </p>
 {% endblock %} 

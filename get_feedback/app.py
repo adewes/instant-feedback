@@ -450,17 +450,19 @@ def view_field_inline(survey_key,field_type,field_id):
 def feedback_js():
     return redirect("/static/feedback.js")
 
-@app.route('/visits',methods = ['GET'])
+@app.route('/visits/<survey_key>',methods = ['GET'])
 @with_session()
 @with_user()
+@with_survey()
+@with_response()
 @jsonp()
 @crossdomain(origin='*')
-def visits():
-    if not 'visits' in request.user:
-        request.user['visits'] = 0
-    request.user['visits']+= 1
-    request.user.save()
-    return json.dumps({'status':200,'visits':request.user['visits']})
+def visits(survey_key):
+    if not 'visits' in request.response:
+        request.response['visits'] = 0
+    request.response['visits']+= 1
+    request.response.save()
+    return json.dumps({'status':200,'visits':request.response['visits']})
 
 @app.route('/cookie_notice/<survey_key>',methods = ['GET'])
 @with_session()
@@ -473,6 +475,17 @@ def cookie_notice(survey_key):
     response = make_response(render_template("/survey/cookie_notice.html",**context))
     return response
 
+
+@app.route('/get_response_key/<survey_key>',methods = ['GET'])
+@with_session()
+@with_user()
+@with_survey()
+@with_response()
+@crossdomain(origin='*')
+@jsonp()
+def get_response_key(survey_key):
+    return json.dumps({'status':200,'response_key':request.response['response_key']})
+
 @app.route('/initialize_cookie/<survey_key>',methods = ['GET'])
 @with_session()
 @with_user()
@@ -480,10 +493,8 @@ def cookie_notice(survey_key):
 @with_response()
 @crossdomain(origin='*')
 def initialize_cookie(survey_key):
-    print request.args
     if not 'redirect_to' in request.args:
         abort(404)
-    print "Redirecting..."
     return redirect(request.args['redirect_to'])
 
 if __name__ == '__main__':
