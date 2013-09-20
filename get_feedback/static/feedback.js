@@ -70,6 +70,8 @@ function check_cookies()
         }
     }
         }
+    if (! survey_key)
+        return;
     if (response_key)//if there's a response key we don't need cookies
         return;
     var jqxhr = $.ajax(request_params);
