@@ -35,15 +35,15 @@ function check_cookies()
         success:function(data) {
         if (data['status'] = 200)
         {
-            visits = data['visits']
+            visits = data['visits'];
             if (last_visits == null)
             {
-                last_visits = visits
+                last_visits = visits;
                 $.ajax(request_params);
             }
             else
             {
-                if (last_visits != visits && ! response_key)
+                if (last_visits == visits && ! response_key)
                 {
                     //the browser seems to block cross-domain cookies, so we'll assign a random response-key by hand and attach it to the URL...
                     var jqxhr = $.ajax({
