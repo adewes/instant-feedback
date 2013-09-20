@@ -300,8 +300,8 @@ def remove_authorized_key(survey_key):
 
 @app.route('/update_response/<survey_key>/<field_type>/<field_id>',methods = ['GET','POST'])
 @with_session()
-@with_user()
 @with_survey()
+@with_user()
 @with_response()
 @with_field()
 @jsonp()
@@ -435,8 +435,8 @@ def view_summary(survey_key,field_type,field_id):
 
 @app.route('/view_field_inline/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
 @with_session()
-@with_user()
 @with_survey()
+@with_user()
 @with_response()
 @jsonp()
 @crossdomain(origin='*')
@@ -445,28 +445,26 @@ def view_field_inline(survey_key,field_type,field_id):
 
 @app.route('/feedback.js',methods = ['GET'])
 @with_session()
-@with_user()
 @crossdomain(origin='*')
 def feedback_js():
     return redirect("/static/feedback.js")
 
 @app.route('/visits/<survey_key>',methods = ['GET'])
 @with_session()
-@with_user()
-@with_survey()
-@with_response()
-@jsonp()
 @crossdomain(origin='*')
+@jsonp()
 def visits(survey_key):
-    if not 'visits' in request.response:
-        request.response['visits'] = 0
-    request.response['visits']+= 1
-    request.response.save()
-    return json.dumps({'status':200,'visits':request.response['visits']})
+    visits = request.cookies.get('visits')
+    if not visits:
+        visits = 0
+    else:
+        visits = int(visits)
+    response = make_response(json.dumps({'status':200,'visits':visits}))
+    response.set_cookie('visits',str(visits+1))
+    return response
 
 @app.route('/cookie_notice/<survey_key>',methods = ['GET'])
 @with_session()
-@with_user()
 @with_survey()
 @with_response()
 @crossdomain(origin='*')
@@ -478,7 +476,6 @@ def cookie_notice(survey_key):
 
 @app.route('/get_response_key/<survey_key>',methods = ['GET'])
 @with_session()
-@with_user()
 @with_survey()
 @with_response()
 @crossdomain(origin='*')
@@ -488,7 +485,6 @@ def get_response_key(survey_key):
 
 @app.route('/initialize_cookie/<survey_key>',methods = ['GET'])
 @with_session()
-@with_user()
 @with_survey()
 @with_response()
 @crossdomain(origin='*')

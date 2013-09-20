@@ -56,6 +56,7 @@ function check_cookies()
                         success:function(data) {
                             if (data['status'] = 200)
                             {
+                                response_key = data['response_key'];
                                 var location = window.location;
                                 if (location.search)
                                     window.location.search = location.search+"&response_key="+data['response_key'];
