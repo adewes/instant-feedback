@@ -43,7 +43,7 @@ function check_cookies()
             }
             else
             {
-                if (last_visits == visits && ! response_key)
+                if (last_visits != visits && ! response_key)
                 {
                     //the browser seems to block cross-domain cookies, so we'll assign a random response-key by hand and attach it to the URL...
                     var jqxhr = $.ajax({

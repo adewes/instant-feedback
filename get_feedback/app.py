@@ -477,6 +477,7 @@ def cookie_notice(survey_key):
 @app.route('/get_response_key/<survey_key>',methods = ['GET'])
 @with_session()
 @with_survey()
+@with_user()
 @with_response()
 @crossdomain(origin='*')
 @jsonp()
