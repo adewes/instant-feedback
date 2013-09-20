@@ -36,7 +36,7 @@ function check_cookies()
         if (data['status'] = 200)
         {
             visits = data['visits']
-            if (!last_visits)
+            if (last_visits == null)
             {
                 last_visits = visits
                 $.ajax(request_params);
