@@ -56,15 +56,40 @@ def logout():
     response = make_response(render_template("survey/logout.html",**context))
     return response
     
-@app.route('/inline_menu/<survey_key>')
+@app.route('/survey_menu/<survey_key>')
 @with_session()
 @with_user()
 @with_survey()
 @with_admin()
-@jsonp()
-def inline_menu(survey_key):
+def survey_menu(survey_key):
     context = {'server_url':settings.server_url,'survey':request.survey}
-    response = make_response(json.dumps({'html':render_template("_menu.html",**context)}))
+    response = make_response(render_template("survey/menu.html",**context))
+    return response
+
+@app.route('/new_field/<survey_key>',methods = ['GET','POST'])
+@with_session()
+@with_user()
+@with_survey()
+@with_admin()
+def new_field(survey_key):
+    if request.method == 'POST':
+        path = json.loads(request.form['path'])
+        request.survey['dynamic_fields'] = {'input':{'test':{'path':path}}}
+        request.survey.save()
+    context = {'server_url':settings.server_url,'survey':request.survey}
+    response = make_response(render_template("survey/new_field.html",**context))
+    return response
+
+@app.route('/get_dynamic_fields/<survey_key>',methods = ['GET'])
+@with_session()
+@with_user()
+@with_survey()
+@jsonp()
+def get_dynamic_fields(survey_key):
+    if not 'dynamic_fields' in request.survey:
+        abort(404)
+    response = make_response(json.dumps({'status':200, 'fields':request.survey['dynamic_fields']}))
+    response.mimetype='text/json'
     return response
 
 def _index():
@@ -133,7 +158,6 @@ def export_responses(survey_key):
     opts['indent'] = 4
     response = make_response(json.dumps({'fields':request.survey['fields'],'responses':exported_responses},**opts))
     response.mimetype='text/json'
-
     return response
 
 @app.route('/toogle_authorized_keys_only/<survey_key>')

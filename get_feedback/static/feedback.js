@@ -5,6 +5,9 @@ var response_key = getParameterByName('response_key');
 var show_summary = getParameterByName('show_summary');
 var survey_server_url = '';
 var show_menu = true;
+var select_element = false;
+var selected_element_path = null;
+var dynamic_fields = []
 
 function handle_message(e)
 {
@@ -13,7 +16,21 @@ function handle_message(e)
     if (data['type'] == 'reload_field')
     {
         $.fancybox.close();
-        reload_element(data['field_type'],data['field_id'])
+        reload_field(data['field_type'],data['field_id'])
+    }
+    else if (data['type'] == 'toggle_results')
+    {
+        show_summary = ! show_summary;
+        initialize_fields();
+    }
+    else if (data['type'] == 'select_element')
+    {
+        select_element = true;
+    }
+    else if (data['type'] == 'get_selected_element_path')
+    {
+        var post_data={'type':'selected_element_path','path':selected_element_path};
+        e.source.postMessage(JSON.stringify(post_data),'*');
     }
     else if (data['type'] == 'get_cookie')
     {
@@ -22,61 +39,49 @@ function handle_message(e)
     }
 }
 
-function check_cookies()
+function get_element_for_path(path)
 {
-    var last_visits = null;
-    var request_params = {
-        url:survey_server_url+'/visits/'+survey_key,
-        data:{},
-        xhrFields: {withCredentials: true},
-        type:'GET',
-        cache: false,
-        dataType: 'jsonp',
-        success:function(data) {
-        if (data['status'] = 200)
-        {
-            visits = data['visits'];
-            if (last_visits == null)
-            {
-                last_visits = visits;
-                $.ajax(request_params);
-            }
-            else
-            {
-                if (last_visits == visits && ! response_key)
+    var current_element = $('html');
+    for(var i=path.length-1;i>=0;i--)
+    {
+        current_element = $(current_element.children()[path[i]['position']]);
+    }
+    return current_element;
+}
+
+function get_dynamic_fields()
+{
+    var jqxhr = $.ajax({
+    url:survey_server_url+'/get_dynamic_fields/'+survey_key,
+    data:{},
+    cache: false,
+    xhrFields: {withCredentials: true},
+    type:'GET',
+    dataType: 'jsonp',
+    success:
+    function(data) {
+                if (data['status'] = 200)
                 {
-                    //the browser seems to block cross-domain cookies, so we'll assign a random response-key by hand and attach it to the URL...
-                    var jqxhr = $.ajax({
-                        url:survey_server_url+'/get_response_key/'+survey_key,
-                        data:{},
-                        xhrFields: {withCredentials: true},
-                        type:'GET',
-                        cache: false,
-                        dataType: 'jsonp',
-                        success:function(data) {
-                            if (data['status'] = 200)
+                    dynamic_fields = data['fields'];
+                    for(var i in feature_types)
+                    {
+                        var feature_type = feature_types[i];
+                        if (feature_type in dynamic_fields)
+                        {
+                            for(var id in dynamic_fields[feature_type])
                             {
-                                response_key = data['response_key'];
-                                var location = window.location;
-                                if (location.search)
-                                    window.location.search = location.search+"&response_key="+data['response_key'];
-                                else
-                                    window.location.search = 'response_key='+data['response_key'];
+                                var dynamic_field = dynamic_fields[feature_type][id];
+                                element = get_element_for_path(dynamic_field['path']['path'])
+                                element.html("gotcha!");
                             }
                         }
-                        })                
+                    }
                 }
-            }
-        }
-    }
-        }
-    if (! survey_key)
-        return;
-    if (response_key)//if there's a response key we don't need cookies
-        return;
-    var jqxhr = $.ajax(request_params);
+            }    
+        })
 
 }
+
 
 $(document).ready(function() {
         jQuery.support.cors = true;
@@ -90,8 +95,16 @@ $(document).ready(function() {
         openEffect  : 'none',
         closeEffect : 'none'
         });
-        check_cookies();
-});
+        initialize_fields();
+
+        if (show_menu)  
+            initialize_menu();
+        if (survey_key)
+        {
+            $('body').mousemove(track_mouse);
+            get_dynamic_fields();
+        }
+        }); 
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -104,35 +117,74 @@ function initialize_feature(feature_type,feature_id,value,admin)
 {
 }
 
+function get_element_path(element)
+{
+    var parents = element.parents();
+    var current_element = element;
+    var path = [];
+    for(var i =0;i<parents.length;i++)
+    {
+        var attrs = {
+            'tag' : current_element.get(0).tagName,
+            'position' : current_element.parent().children().index(current_element.get(0)),
+            'class' : current_element.attr('class'),
+            'id' : current_element.attr('id')
+        };
+        path.push(attrs);
+        current_element = $(parents[i]);
+    }
+    return {'content':element.html(),'path':path};
+}
+
+function open_new_field_dialog()
+{
+    var survey_overlay = $('#survey_overlay');    
+    var selected_element = $(survey_overlay.parent());
+
+    select_element = false;
+    $('#survey_overlay').remove();
+
+    selected_element_path = get_element_path(selected_element);
+
+
+    $('body').fancybox({
+            'type' : 'iframe',
+            'href' : survey_server_url+'/new_field/'+survey_key,
+        }
+    ).click();
+}
+
+function track_mouse(e)
+{
+    var x = event.clientX, y = event.clientY;
+
+    if (!select_element)
+        return false;
+
+    $('#survey_overlay').remove();
+
+    var selected_element = $(document.elementFromPoint(x, y));
+    selected_element.prepend('<a id="survey_overlay" href="" onclick="open_new_field_dialog();return false;">&nbsp;</a>');
+    var survey_overlay = $('#survey_overlay');    
+    survey_overlay.offset(selected_element.offset());
+    survey_overlay.width(selected_element.width());
+    survey_overlay.height(selected_element.height());
+}
+
 function initialize_menu()
 {
-
+    if (!survey_key)
+        return;
     function adapt_body_margin()
     {
         $('body').css("margin-top",($('#survey_menu').height()+40)+'px');
     }
-    var jqxhr = $.ajax({
-        url:survey_server_url+'/inline_menu/'+survey_key+(response_key ? '?response_key='+response_key: ''),
-        data:{},
-        xhrFields: {withCredentials: true},
-        type:'GET',
-        cache: false,
-        dataType: 'jsonp',
-        success:function(data) {
-        if (data['status'] = 200)
-        {
-            if ($('#survey_menu').length)
-                $('#survey_menu').replaceWith(data['html']);
-            else
-                $('body').prepend(data['html']);
-            $(window).resize(adapt_body_margin);
-            adapt_body_margin();
-        }
-    }
-        })
+    $('body').prepend('<iframe id="survey_menu" src="'+survey_server_url+'/survey_menu/'+survey_key+'"></iframe>');
+    $('html').css('position','absolute');
+    $('html').css('left',($('#survey_menu').width()+100)+'px');
 }
 
-function initialize_element(element,feature_type,feature_id)
+function initialize_field(field,feature_type,feature_id)
 {
     var jqxhr = $.ajax({
     url:survey_server_url+(show_summary ? '/view_summary_inline/' : '/view_field_inline/')+survey_key+'/'+feature_type+'/'+feature_id+(response_key ? '?response_key='+response_key: ''),
@@ -145,41 +197,37 @@ function initialize_element(element,feature_type,feature_id)
     function(data) {
                 if (data['status'] = 200)
                 {
-                    var new_element = element;
-                    new_element.innerHTML = data['html'];
-                    element.parentNode.replaceChild(element,new_element);
+                    var new_field = field;
+                    new_field.innerHTML = data['html'];
+                    field.parentNode.replaceChild(field,new_field);
                     initialize_feature(feature_type,feature_id,data['value'],data['admin']);
                 }
             }    
         })
 }
 
-function initialize_elements()
+function initialize_fields()
 {
     if (! survey_key)
     {
         return;
     }  
-    if (show_menu)  
-        initialize_menu();
     for(var i=0;i<feature_types.length;i++)
     {
         feature_type = feature_types[i];
-        elements = $('.survey_'+feature_type);
-        for(var j=0;j<elements.length;j++)
+        fields = $('.survey_'+feature_type);
+        for(var j=0;j<fields.length;j++)
         {
-            element = elements[j];
-            feature_id = element.id;
+            field = fields[j];
+            feature_id = field.id;
 
-            initialize_element(element,feature_type,feature_id);
+            initialize_field(field,feature_type,feature_id);
 
         }
     }
 }
 
-window.onload = initialize_elements;
-
-function reload_element(feature_type,feature_id)
+function reload_field(feature_type,feature_id)
 {
     var jqxhr = $.ajax({
     url:survey_server_url+(show_summary ? '/view_summary_inline/' : '/view_field_inline/')+survey_key+'/'+feature_type+'/'+feature_id+(response_key ? '?response_key='+response_key: ''),
@@ -219,7 +267,7 @@ function update_response(feature_type,feature_id,value)
     });
 }
 
-/*helper functions for the rate element */
+/*helper functions for the rate field */
 
 function mouseover_star(feature_id,star,current_value)
 {
@@ -463,9 +511,9 @@ function mouseout_star(feature_id,star,current_value)
         //Current state
         group    : {}, // Selected group
         opts     : {}, // Group options
-        previous : null,  // Previous element
-        coming   : null,  // Element being loaded
-        current  : null,  // Currently loaded element
+        previous : null,  // Previous field
+        coming   : null,  // field being loaded
+        current  : null,  // Currently loaded field
         isActive : false, // Is activated
         isOpen   : false, // Is currently open
         isOpened : false, // Have been fully opened at least once
@@ -511,8 +559,8 @@ function mouseout_star(feature_id,star,current_value)
                 group = isQuery(group) ? $(group).get() : [group];
             }
 
-            // Recheck if the type of each element is `object` and set content type (image, ajax, etc)
-            $.each(group, function(i, element) {
+            // Recheck if the type of each field is `object` and set content type (image, ajax, etc)
+            $.each(group, function(i, field) {
                 var obj = {},
                     href,
                     title,
@@ -522,40 +570,40 @@ function mouseout_star(feature_id,star,current_value)
                     hrefParts,
                     selector;
 
-                if ($.type(element) === "object") {
-                    // Check if is DOM element
-                    if (element.nodeType) {
-                        element = $(element);
+                if ($.type(field) === "object") {
+                    // Check if is DOM field
+                    if (field.nodeType) {
+                        field = $(field);
                     }
 
-                    if (isQuery(element)) {
+                    if (isQuery(field)) {
                         obj = {
-                            href    : element.data('fancybox-href') || element.attr('href'),
-                            title   : element.data('fancybox-title') || element.attr('title'),
+                            href    : field.data('fancybox-href') || field.attr('href'),
+                            title   : field.data('fancybox-title') || field.attr('title'),
                             isDom   : true,
-                            element : element
+                            field : field
                         };
 
                         if ($.metadata) {
-                            $.extend(true, obj, element.metadata());
+                            $.extend(true, obj, field.metadata());
                         }
 
                     } else {
-                        obj = element;
+                        obj = field;
                     }
                 }
 
-                href  = opts.href  || obj.href || (isString(element) ? element : null);
+                href  = opts.href  || obj.href || (isString(field) ? field : null);
                 title = opts.title !== undefined ? opts.title : obj.title || '';
 
                 content = opts.content || obj.content;
                 type    = content ? 'html' : (opts.type  || obj.type);
 
                 if (!type && obj.isDom) {
-                    type = element.data('fancybox-type');
+                    type = field.data('fancybox-type');
 
                     if (!type) {
-                        rez  = element.prop('class').match(/fancybox\.(\w+)/);
+                        rez  = field.prop('class').match(/fancybox\.(\w+)/);
                         type = rez ? rez[1] : null;
                     }
                 }
@@ -572,14 +620,14 @@ function mouseout_star(feature_id,star,current_value)
                         } else if (href.charAt(0) === '#') {
                             type = 'inline';
 
-                        } else if (isString(element)) {
+                        } else if (isString(field)) {
                             type    = 'html';
-                            content = element;
+                            content = field;
                         }
                     }
 
                     // Split url into two pieces with source url and content selector, e.g,
-                    // "/mypage.html #my_id" will load "/mypage.html" and display element having id "my_id"
+                    // "/mypage.html #my_id" will load "/mypage.html" and display field having id "my_id"
                     if (type === 'ajax') {
                         hrefParts = href.split(/\s+/, 2);
                         href      = hrefParts.shift();
@@ -593,7 +641,7 @@ function mouseout_star(feature_id,star,current_value)
                             content = $( isString(href) ? href.replace(/.*(?=#[^\s]+$)/, '') : href ); //strip for ie7
 
                         } else if (obj.isDom) {
-                            content = element;
+                            content = field;
                         }
 
                     } else if (type === 'html') {
@@ -601,7 +649,7 @@ function mouseout_star(feature_id,star,current_value)
 
                     } else if (!type && !href && obj.isDom) {
                         type    = 'inline';
-                        content = element;
+                        content = field;
                     }
                 }
 
@@ -949,14 +997,14 @@ function mouseout_star(feature_id,star,current_value)
             if (keys) {
                 D.bind('keydown.fb', function (e) {
                     var code   = e.which || e.keyCode,
-                        target = e.target || e.srcElement;
+                        target = e.target || e.srcfield;
 
                     // Skip esc key if loading, because showLoading will cancel preloading
                     if (code === 27 && F.coming) {
                         return false;
                     }
 
-                    // Ignore key combinations and key events within form elements
+                    // Ignore key combinations and key events within form fields
                     if (!e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey && !(target && (target.type || $(target).is('[contenteditable]')))) {
                         $.each(keys, function(i, val) {
                             if (current.group.length > 1 && val[ code ] !== undefined) {
@@ -1407,7 +1455,7 @@ function mouseout_star(feature_id,star,current_value)
                 current.inner.append( content );
             }
 
-            // Give a chance for helpers or callbacks to update elements
+            // Give a chance for helpers or callbacks to update fields
             F.trigger('beforeShow');
 
             // Set scrolling before calculating dimensions
@@ -1775,7 +1823,7 @@ function mouseout_star(feature_id,star,current_value)
     F.transitions = {
         getOrigPosition: function () {
             var current  = F.current,
-                element  = current.element,
+                field  = current.field,
                 orig     = current.orig,
                 pos      = {},
                 width    = 50,
@@ -1784,11 +1832,11 @@ function mouseout_star(feature_id,star,current_value)
                 wPadding = current.wPadding,
                 viewport = F.getViewport();
 
-            if (!orig && current.isDom && element.is(':visible')) {
-                orig = element.find('img:first');
+            if (!orig && current.isDom && field.is(':visible')) {
+                orig = field.find('img:first');
 
                 if (!orig.length) {
-                    orig = element;
+                    orig = field;
                 }
             }
 
@@ -1969,7 +2017,7 @@ function mouseout_star(feature_id,star,current_value)
 
         overlay : null,      // current handle
         fixed   : false,     // indicates if the overlay has position "fixed"
-        el      : $('html'), // element that contains "the lock"
+        el      : $('html'), // field that contains "the lock"
 
         // Public methods
         create : function(opts) {
@@ -2058,7 +2106,7 @@ function mouseout_star(feature_id,star,current_value)
 
             // jQuery does not return reliable result for IE
             if (IE) {
-                offsetWidth = Math.max(document.documentElement.offsetWidth, document.body.offsetWidth);
+                offsetWidth = Math.max(document.documentfield.offsetWidth, document.body.offsetWidth);
 
                 if (D.width() > offsetWidth) {
                     width = D.width();
@@ -2152,7 +2200,7 @@ function mouseout_star(feature_id,star,current_value)
                 target;
 
             if ($.isFunction(text)) {
-                text = text.call(current.element, current);
+                text = text.call(current.field, current);
             }
 
             if (!isString(text) || $.trim(text) === '') {
