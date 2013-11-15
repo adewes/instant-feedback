@@ -4,9 +4,11 @@
 <h1>Results</h1>
 
 <p>
+    <span class="survey_field">
     {% for i in range(1,(field.n or 5)+1 ) %}
     <i class="{% if field.icon %}icon-{{field.icon}}{%else%}icon-star{%endif%} {%if summary.average > i-1%}yellow{%endif%}"></i>
     {%endfor%}
+    </span>
     &oslash;{{'%0.2g'| format(summary.average)}}<br />
     ({{summary.n}} respondents)
 </p>
@@ -26,9 +28,11 @@
     {%for i in range(1,(field.n or 5)+1 ) %}
     <tr>
         <td>
+        <span class="survey_field">
         {%for j in range(1,i+1) %}
             <i class="{% if field.icon %}icon-{{field.icon}}{%else%}icon-star{%endif%} yellow"></i>
         {%endfor%}
+        </span>
         </td>
         <td>
             {%if i in summary.distribution %}{{summary.distribution.get(i)}}{%else%}0{%endif%}

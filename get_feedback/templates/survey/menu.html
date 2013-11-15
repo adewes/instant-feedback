@@ -1,0 +1,20 @@
+{% extends '/layouts/modal.html' %}
+
+{%block content%}
+<div class="survey_menu" id="survey_menu">
+<!--    <h1>Survey Admin - {{survey.name}}</h1>-->
+    <ul>
+        <li>
+            <a href="" onclick="var data=JSON.stringify({'type' :'toggle_results'});parent.window.postMessage(data,'*');return false;">toggle results</a>
+        </li>
+        {%if False%}
+        <li>
+            <a href="" onclick="var data=JSON.stringify({'type' :'select_element'});parent.window.postMessage(data,'*');return false;">create new field</a>
+        </li>
+        {%endif%}
+        <li>
+            <a target="_parent" href="{{server_url}}/details/{{survey.key}}">go to admin page</a>
+        </li>
+    </ul>
+</div>
+{%endblock%}

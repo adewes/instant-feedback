@@ -1,0 +1,8 @@
+{%extends '/layouts/modal.html' %}
+
+{%block title%}The field has been deleted{%endblock%}
+
+{%block content%}
+<p>The field has been deleted.</p>
+{%endblock%}
+{%block body_onload %}onload="var data=JSON.stringify({'type' :'delete_field',field_type : '{{field_type}}',field_id:'{{field_id}}'});parent.window.postMessage(data,'*');"{%endblock%}

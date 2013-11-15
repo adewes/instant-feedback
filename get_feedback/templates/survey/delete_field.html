@@ -1,0 +1,18 @@
+{% extends "layouts/base.html" %}
+{% block title %}Delete Survey{% endblock %}
+
+{%block content %}
+
+      <!-- Jumbotron -->
+      <div class="row widget">
+        <div class="col-md-12">
+        <h2>Delete Survey Field</h2>
+          <p>
+          Are you sure that you want to delete the field <strong>{{field_id}}</strong>?
+          </p>
+          <p style="text-align:right">
+          <a class="btn btn-info" href="/summary/{{survey.key}}">Cancel</a> <a href="/delete_field/{{survey.key}}/{{field_type}}/{{field_id}}?confirm=1" class="btn btn-danger">Delete field</a>
+          </p>
+      </div>
+      </div>
+{%endblock%}

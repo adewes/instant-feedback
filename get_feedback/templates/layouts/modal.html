@@ -6,7 +6,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="/static/bootstrap/assets/ico/favicon.png">
-    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
     
     <title>{%block title %}{%endblock%}</title>
 
@@ -17,8 +16,9 @@
 
     <link href="/static/justified_nav.css" rel="stylesheet">
 
-    <link href="/static/feedback.css" rel="stylesheet">
-    <script src="/static/feedback.js"></script>
+    <link href="/feedback.css" rel="stylesheet">
+    <script src="/feedback.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
 
     {%block head_extra %}{%endblock%}
 
@@ -30,7 +30,7 @@
 
 
   </head>
-  <body data-spy="scroll" {%block body_onload%}onload="initialize_elements();"{%endblock%}>
+  <body data-spy="scroll" {%block body_onload %}{%endblock%}>
 
     <div class="container">
 
@@ -40,6 +40,8 @@
       {{error}}
       </div>
       {%endif%}
+      <h1>{{self.title()}}</h1>
+      {%block menu %}{%endblock%}
       {%block content %}{%endblock%}
       </div>
 

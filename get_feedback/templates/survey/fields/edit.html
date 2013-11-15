@@ -1,3 +1,4 @@
 {%extends '/layouts/modal.html' %}
 
+{%block menu%}{%if field.active == False %}(this field is currently deactivated)<br /> <a href="/activate_field/{{survey_key}}/{{field_type}}/{{field_id}}"><i class="icon-ok"></i> activate</a>{%else%}<a href="/deactivate_field/{{survey_key}}/{{field_type}}/{{field_id}}"><i class="icon-ban-circle"></i> deactivate</a>{%endif%}{%endblock%}
 {%block body_onload %}{% if success %}onload="var data=JSON.stringify({'type' :'reload_field', field_type : '{{field_type}}',field_id:'{{field_id}}'});parent.window.postMessage(data,'*');"{%endif%}{%endblock%}

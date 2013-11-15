@@ -1,6 +1,6 @@
 {%block opening %}{%endblock%}
 {{field.html_before|safe}}{%block main%}{%endblock%}{{field.html_after|safe}}
 {%if is_admin %}
-<a class="survey" data-fancybox-type="iframe" href="{{server_url}}/edit_field/{{survey_key}}/{{field_type}}/{{field_id}}"><sup><i class="icon-edit"></i></sup></a>
+<a class="survey" data-fancybox-type="iframe" href="{{server_url}}/edit_field/{{survey_key}}/{{field_type}}/{{field_id}}"><sup><i class="icon-edit"></i></sup></a>{% if 'active' in field and not field.active %}<sup><i style="color:red;" class="icon-ban-circle"></i></sup>{%endif%}
 {%endif%}
 {%block closing %}{%endblock%}

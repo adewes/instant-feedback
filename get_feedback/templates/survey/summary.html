@@ -2,6 +2,7 @@
 {% block title %}Survey Summary - {{survey.name}} {% endblock %}
 
 {%block head_extra %}
+<script src="/feedback.js"></script>
 <script>
 var survey_key = '{{survey.key}}';
 var show_summary = true;
@@ -12,11 +13,11 @@ var show_menu = false;
 {%block content %}
 
       <!-- Jumbotron -->
-      <div class="row">
+      <div class="row widget">
         <div class="col-md-12">
             <h2>Survey Summary - {{survey.name}}</h2>
             <p>Respondents: {{responses}}</p>
-            <h3>Fields</h3>
+
             <table class="table table-striped table-bordered table-hover table-condensed table-responsive">
             <thead>
               <tr>
@@ -29,23 +30,38 @@ var show_menu = false;
                 <th>
                   Summary
                 </th>
+                <th>
+                  Actions
+                </th>
               </tr>
             </thead>
+
             {%for field_type in survey.fields%}
 
-            <tr><td colspan=3 style="font-size:2em; padding:20px">{{field_type}}</td></tr>
-              {% for id in survey.fields.get(field_type) %}
-                <tr>
-                  <td>{{id}}</td>
-                  <td>{%if survey.fields.get(field_type).get(id).description%}{{survey.fields.get(field_type).get(id).description}}{%else%}(no description available){%endif%}</td>
-                  <td>
-                    <span class="survey_{{field_type}}" id="{{id}}"></span>
-                  </td>
-                </tr>            
-                
+            {% if survey.fields.get(field_type) %}
 
-              {%endfor%}
+            <tr>
+                <td colspan=4 style="font-size:1.2em; font-weight:bolder;">{{field_type}}</td>
+            </tr>
 
+            {% for id in survey.fields.get(field_type) %}
+              <tr>
+                <td>{{id}}</td>
+                <td>{%if survey.fields.get(field_type).get(id).description%}{{survey.fields.get(field_type).get(id).description}}{%else%}{%endif%}</td>
+                <td>
+                  <span class="survey_{{field_type}}" id="{{id}}"></span>
+                </td>
+                <td>
+                  <a href="/delete_field/{{survey.key}}/{{field_type}}/{{id}}"><i class="icon-trash"></i> delete</a>
+                  //
+                  <a class="survey" data-fancybox-type="iframe" href="/edit_field/{{survey.key}}/{{field_type}}/{{id}}"><i class="icon-edit"></i> edit</a>
+                  
+                </td>
+              </tr>            
+              
+
+            {%endfor%}
+            {%endif%}
             {%endfor%}
             </table>
         </div>

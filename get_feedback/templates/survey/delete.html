@@ -6,9 +6,12 @@
       <!-- Jumbotron -->
       <div class="row widget">
         <div class="col-md-12">
+        <h2>Delete Survey</h2>
           <p>
-          Are you sure that you want to delete the survey {{survey.name}}?<br /> <strong>There is no undo!</strong><br />
-          <a class="btn btn-info" href="/details/{{survey.key}}">No, get me out of here!</a> <a href="/delete/{{survey.key}}?confirm=1" class="btn btn-danger">Yes, delete survey!</a>
+          Are you sure that you want to delete the survey <strong>{{survey.name}}</strong>?
+          </p>
+          <p style="text-align:right">
+          <a class="btn btn-info" href="/details/{{survey.key}}">Cancel</a> <a href="/delete/{{survey.key}}?confirm=1" class="btn btn-danger">Delete survey</a>
           </p>
       </div>
       </div>

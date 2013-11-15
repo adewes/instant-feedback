@@ -29,7 +29,7 @@ class Survey(orm.Document):
         return settings.field_types[field_type](self['fields'][field_type][field_id])
 
     def init_field(self,field_type,field_id):
-        field = settings.field_types[field_type]({})
+        field = settings.field_types[field_type]()
         self.set_field(field_type,field_id,field)
         return field
 

@@ -1,0 +1,127 @@
+::-moz-selection {
+  background: #3498db;
+}
+::selection {
+  background: #3498db;
+}
+
+a {
+  color: #3498db;
+}
+
+a:hover {
+	color: #2984c0;
+}
+
+/* --- button theme --- */
+.btn-theme {
+  background: #3498db;
+  *background-color: #3498db;
+}
+
+.btn-theme:hover,
+.btn-theme:active,
+.btn-theme.active,
+.btn-theme.disabled,
+.btn-theme[disabled] {
+  background: #2984c0;
+  *background: #2984c0;
+}
+
+/* --- slogan --- */
+.slogan h1 span {
+	color: #3498db;
+}
+
+.tweet a {
+	color:#3498db;
+}
+
+.tweet .tweet_time a:hover i {
+	color:#3498db;
+}
+
+
+
+/* fontawesome icons */
+.icon-square:hover,
+.icon-rounded:hover,
+.icon-circled:hover {
+    background-color: #3498db;
+}
+[class^="icon-"].active,
+[class*=" icon-"].active {
+    background-color: #3498db;
+}
+
+
+
+
+.navbar .nav > li > a:hover {
+  color: #3498db;
+}
+
+
+ul.nav li.current {
+  background: #3498db;
+}
+.dropdown-menu li > a:hover,
+.dropdown-menu li > a:focus,
+.dropdown-submenu:hover > a {
+	background: #3498db;
+}
+
+input:focus, textarea:focus {
+	border: 1px solid #3498db;
+	border-width:4px;
+}
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.uneditable-input:focus {
+  border-color: #3498db;
+}
+
+ul.contact-list li input.form_input:focus ,
+ul.contact-list li textarea.form_textarea:focus  {
+	border-color:#3498db;
+}
+
+
+/* tab */
+
+.nav-tabs > a {
+	color:#3498db;
+}
+
+
+/* accordion */
+.accordion-heading a:hover {
+	color: #3498db;
+}
+.accordion-heading .active{
+	color: #3498db;
+}
+
+.accordion-inner {
+
+}
+
+
+/* portfolio */
+
+.thumb-wrapp{
+	background:#3498db;
+}

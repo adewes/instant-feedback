@@ -3,11 +3,18 @@ from collections import defaultdict
 
 class BaseField(object):
 
-    def __init__(self,attributes):
-        self.attributes = attributes
+    def __init__(self,attributes = None):
+        if attributes:
+            self.attributes = attributes
+        else:
+            self.attributes = self.default_attributes()
+
+    def default_attributes(self):
+        return {}
 
     def update_attributes(self,attributes):
-        self.attributes = attributes
+        for key,value in attributes.items():
+            self.attributes[key] = value
         return self.attributes
 
     def value_context(self,value):
@@ -21,7 +28,7 @@ class Select(BaseField):
     def default_value(self):
         return ''
 
-    def aggregate(self,responses,args = None):
+    def aggregate(self,responses):
         if not 'choices' in self.attributes:
             return {}
         frequencies = defaultdict(lambda : {'n':0,'distribution':defaultdict(lambda :0)} )
@@ -61,7 +68,10 @@ class Check(BaseField):
     def default_value(self):
         return 0
 
-    def aggregate(self,responses,args = None):
+    def default_attributes(self):
+        return {'icon':'ok'}
+
+    def aggregate(self,responses):
         counts = defaultdict(lambda : 0)
         for response in responses:
             if not 'check' in response:
@@ -86,6 +96,9 @@ class Rate(BaseField):
     def default_value(self):
         return 0
 
+    def default_attributes(self):
+        return {'icon':'star','n':5}
+
     def update_attributes(self,attributes):
         sanitized_attributes = {}
         for key,value in attributes.items():
@@ -102,8 +115,8 @@ class Rate(BaseField):
                     raise ValueError("Maximum allowed value for n: 10")
         super(Rate,self).update_attributes(sanitized_attributes)
 
-    def aggregate(self,responses,args = None):
-        counts = defaultdict(lambda: {'n':0,'average':0,'distribution':defaultdict(lambda :0)})
+    def aggregate(self,responses):
+        counts = defaultdict(lambda: {'n':0,'average':0.0,'distribution':defaultdict(lambda :0)})
         for response in responses:
             if not 'rate' in response:
                 continue
@@ -130,7 +143,7 @@ class Input(BaseField):
     def default_value(self):
         return ''
 
-    def aggregate(self,responses,args = None):
+    def aggregate(self,responses):
         frequencies = defaultdict(lambda : {'truncated':False,'frequencies' :defaultdict(lambda :0),'responses':0} )
         for response in responses:
             if not 'input' in response:
@@ -154,7 +167,7 @@ class Scale(BaseField):
     def default_value(self):
         return 0
 
-    def aggregate(self,responses,args = None):
+    def aggregate(self,responses):
         counts = defaultdict(lambda: {'n':0,'average':0})
         for response in responses:
             if not 'scale' in response:
@@ -180,8 +193,11 @@ class Vote(BaseField):
     def default_value(self):
         return 0
 
+    def default_attributes(self):
+        return {'icon_up':'thumbs-up','icon_down':'thumbs-down'}
 
-    def aggregate(self,responses,args = None):
+
+    def aggregate(self,responses):
         counts = defaultdict(lambda : {'up':0,'down':0})
         for response in responses:
             if not 'vote' in response:

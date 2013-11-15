@@ -1,0 +1,47 @@
+{%extends '/layouts/modal.html' %}
+
+{%block head_extra %}
+<script>
+function handle_message(e)
+{
+    e = e || window.event;
+    var data = eval(JSON.parse(e.data));
+    if (data['type'] == 'selected_element_path')
+    {
+        $('#path').val(JSON.stringify(data['path']))
+    }
+}
+
+function get_selected_element_path()
+{
+    var data={'type':'get_selected_element_path'};
+    window.parent.postMessage(JSON.stringify(data),'*');    
+}
+
+$(document).ready(function() {
+    window.onmessage = handle_message;
+    get_selected_element_path();
+});
+
+</script>
+{%endblock%}
+
+{%block content%}
+<h1>Create New Field</h1>
+
+<form role="form" action="/new_field/{{survey.key}}" method="POST">
+  <div class="form-group">
+    <label for="type">Field Type</label>
+    <select name="type">
+        <option value="input">Input</option>
+        <option value="check">Check</option>
+        <option value="rate">Rate</option>
+        <option value="vote">Vote</option>
+        <option value="select">Select</option>
+    </select>
+  </div>
+  <input type="hidden" id="path" name="path" value="" />
+  <button type="submit" class="btn btn-default">Create Field</button>
+</form>
+
+{%endblock%}

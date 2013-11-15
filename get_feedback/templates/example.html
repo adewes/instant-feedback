@@ -1,34 +1,29 @@
 {%extends 'layouts/base.html' %}
 
 {%block head_extra %}
-    <script>
-    var survey_key = '{{survey.key}}';
-    </script>
+<script src="/feedback.js"></script>
+<script>
+var survey_key = '{{survey.key}}';
+</script>
 {%endblock%}
 
 {%block content %}
       <!-- Jumbotron -->
-      <div class="jumbotron" id="welcome">
-        <h1>Hi there!</h1>
-        <p>
-        </p>
-        <p class="lead">This is an example survey. It has been created especially for you to show you different feedback elements that you can use for your website.</p>
-      </div>
       <div class="row widget">
         <div class="col-md-12">
-        <h1>How it works</h1>
+        <h1>Hi there!</h1>
         <p>
-          This tool allows you to integrate simple, intuitive feedback elements directly into your own website. You do this by simpyl pasting a small code snippet into your website's HTML and adding feedback elements in form of simple <i>SPAN</i> tags wherever you want to collect feedback. Like this, you can collect user feedback without interrupting the user experience. 
+          This tool allows you to integrate simple, intuitive feedback elements directly into your own website. You do this by simply pasting a small code snippet into your website's HTML and adding elements in form of simple <i>SPAN</i> tags wherever you want to collect feedback. Like this, you can collect user feedback without interrupting the user experience. 
         </p>
         <p style="text-align:center; font-size:2em">
-          How much do you like this? <br/><span class="survey_rate" id="how_much_do_you_like_this"></span>
+          How much do you like this idea? <br/><span class="survey_rate" id="how_much_do_you_like_this"></span>
         </p>
         <p>
-          As a bonus, since the feedback elements are realized using very basic HTML they automatically adapt to your page's CSS and integrate seamlessly into your website.
+          As a bonus, since the feedback elements are realized using very basic HTML they automatically adapt to your page's CSS and integrate seamlessly with the rest of your user experience.
         </p>
         <h2>Available elements</h2>
         <p>
-          As of today, we offer five different feedback elements that you can integrate into your website to collect user feedback. Here they are:
+          You can choose between five different feedback elements:
         </p>
 
         <table class="table table-striped" style="font-size:1.4em">
@@ -64,7 +59,7 @@
             </tr>
         </table>
 
-        <p>As you've maybe noticed, as the survey admin you can click on the <sup><i class="icon-edit"></i></sup> icon next to each element to easily modify it in place. In addition, you can get a full results summary by just clicking on the <a href="" onclick="show_summary = ! show_summary;initialize_elements();return false;">toggle results</a> link in the admin menu above. Try it out!</p>
+        <p>As you've maybe noticed, if you're logged in as admin you can click on the <sup><i class="icon-edit"></i></sup> icon next to each element and modify it in place. In addition, you can get a full results summary by just clicking on the "toggle results" link in the admin menu above. Try it out!</p>
 
         <p class="feedback" style="text-align:right; font-size:1.2em; color:#777;">
           How helpful was this?<span class="survey_rate" id="was_this_helpful"></span>

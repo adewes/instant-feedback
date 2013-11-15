@@ -1,7 +1,8 @@
 {% extends "/survey/fields/edit.html" %}
 
+{%block title%}Edit Check Field{%endblock%}
+
 {%block content%}
-<h1>Edit Check field</h1>
 <form action="/edit_field/{{survey_key}}/{{field_type}}/{{field_id}}" method="POST" role="form">
   <div class="form-group">
     <label for="description">Icon</label><sup>*</sup>

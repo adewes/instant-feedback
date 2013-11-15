@@ -14,6 +14,7 @@ from utils import *
 from settings import logger
 
 app = Flask(__name__)
+app.url_map.converters['regex'] = RegexConverter
 
 @app.route('/')
 @with_session()
@@ -74,21 +75,54 @@ def survey_menu(survey_key):
 def new_field(survey_key):
     if request.method == 'POST':
         path = json.loads(request.form['path'])
-        request.survey['dynamic_fields'] = {'input':{'test':{'path':path}}}
+        if not 'type' in request.form or not request.form['type'] in settings.field_types:
+            abort(404)
+        field_id = uuid.uuid4().hex
+        field_type = request.form['type']
+        field = request.survey.init_field(field_type,field_id)
+        field.update_attributes({'path':path})
+        request.survey.set_field(field_type,field_id,field)
         request.survey.save()
+        return redirect(url_for("edit_field",survey_key = request.survey['key'],field_type = field_type,field_id = field_id))
     context = {'server_url':settings.server_url,'survey':request.survey}
     response = make_response(render_template("survey/new_field.html",**context))
     return response
 
-@app.route('/get_dynamic_fields/<survey_key>',methods = ['GET'])
+@app.route('/initialize_survey/<survey_key>',methods = ['GET'])
 @with_session()
 @with_user()
 @with_survey()
+@with_response()
 @jsonp()
-def get_dynamic_fields(survey_key):
-    if not 'dynamic_fields' in request.survey:
+def initialize_survey(survey_key):
+    if 'show_summary' in request.args and request.args['show_summary']:
+        if not request.user.is_admin(request.survey):
+            abort(403)
+        view_function = _view_summary_inline
+    else:
+        view_function = _view_field_inline
+    if not 'fields' in request.survey:
         abort(404)
-    response = make_response(json.dumps({'status':200, 'fields':request.survey['dynamic_fields']}))
+    fields_with_html = request.survey['fields'].copy()
+    for field_type in fields_with_html:
+        for field_id in fields_with_html[field_type]:
+            field = fields_with_html[field_type][field_id]
+            if 'active' in field and field['active'] == False and not request.user.is_admin(request.survey):
+                continue
+            content = view_function(request.survey['key'],field_type,field_id,return_data = True)
+            if content['status'] == 200:
+                field['html'] = content['html']
+                field['value'] = content['value']
+            else:
+                del fields_with_html[field_type][field_id]
+
+    survey_parameters = {
+                        'response_key' : request.response['response_key'],
+                        'fields' : fields_with_html,
+                        'admin' : True if request.user.is_admin(request.survey) else False,
+                        }
+
+    response = make_response(json.dumps({'status':200, 'survey_parameters':survey_parameters}))
     response.mimetype='text/json'
     return response
 
@@ -211,7 +245,6 @@ def clear_responses(survey_key):
     response = make_response(render_template("survey/clear_responses.html",**context))
     return response
 
-
 @app.route('/new',methods = ['GET','POST'])
 @with_session()
 @with_user()
@@ -249,13 +282,6 @@ def new():
         return redirect(url_for("details",survey_key = survey['key']))
     else:
         return form()
-
-def request_wants_json():
-    best = request.accept_mimetypes \
-        .best_match(['application/json', 'text/html'])
-    return best == 'application/json' and \
-        request.accept_mimetypes[best] > \
-        request.accept_mimetypes['text/html']
 
 @app.route('/set_survey_url/<survey_key>',methods = ['POST'])
 @with_session()
@@ -357,6 +383,49 @@ def update_response(survey_key,field_type,field_id):
 
     return _view_field_inline(survey_key,field_type,field_id)
 
+@app.route('/delete_field/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
+@with_session()
+@with_user()
+@with_survey()
+@with_admin()
+@with_field()
+def delete_field(survey_key,field_type,field_id):
+    context = {'survey':request.survey,'field_id':field_id,'field_type':field_type}
+
+    if 'confirm' in request.args:
+        del request.survey['fields'][field_type][field_id]
+        request.survey.save()
+        return redirect(url_for('summary',survey_key = survey_key))
+
+    response = make_response(render_template("survey/delete_field.html",**context))
+    return response
+
+
+def _set_field_status(survey_key,field_type,field_id,active = False):
+    request.survey['fields'][field_type][field_id]['active'] = active
+    request.survey.save()
+    context = {'survey_key' : survey_key,'field':request.field.attributes,'field_type':field_type,'field_id':field_id,'context':request.field.edit_context(),'success':True}
+    response = make_response(render_template("/survey/fields/"+field_type+"/edit.html",**context))
+    return response
+
+@app.route('/activate_field/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
+@with_session()
+@with_user()
+@with_survey()
+@with_admin()
+@with_field()
+def activate_field(survey_key,field_type,field_id):
+    return _set_field_status(survey_key,field_type,field_id,active = True)
+    
+@app.route('/deactivate_field/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
+@with_session()
+@with_user()
+@with_survey()
+@with_admin()
+@with_field()
+def deactivate_field(survey_key,field_type,field_id):
+    return _set_field_status(survey_key,field_type,field_id,active = False)
+    
 @app.route('/edit_field/<survey_key>/<field_type>/<field_id>',methods = ['GET','POST'])
 @with_session()
 @with_user()
@@ -371,12 +440,10 @@ def edit_field(survey_key,field_type,field_id):
     error = None
     context = {'survey_key' : survey_key,'field':request.field.attributes,'field_type':field_type,'field_id':field_id,'context':request.field.edit_context()}
     if request.method == 'POST':
-        print request.form
         try:
             request.field.update_attributes(request.form)
             request.survey.set_field(field_type,field_id,request.field)
             request.survey.save()
-            print request.field.attributes
         except ValueError as e:
             error = str(e)
         if not error:
@@ -388,22 +455,11 @@ def edit_field(survey_key,field_type,field_id):
     response = make_response(render_template("/survey/fields/"+field_type+"/edit.html",**context))
     return response
 
-def generate_summary(survey,field_type,field_id):
 
-    responses = list(Response.collection.find({'survey_key' : survey['key']}))
-
-    summary = request.field.aggregate(responses,args = request.args)
-
-    if not field_id in summary:
-        return {}
-
-    return summary[field_id]
-
-def _view_field_inline(survey_key,field_type,field_id):
+def _view_field_inline(survey_key,field_type,field_id,return_data = False):
 
     if request.survey['authorized_keys_only'] and not request.response['response_key'] in request.survey['authorized_keys'] and not request.user.is_admin(request.survey):
         return json.dumps({'status':403,'html': ''})
-
     try:
         request.field = request.survey.get_field(field_type,field_id)
     except AttributeError:
@@ -419,7 +475,33 @@ def _view_field_inline(survey_key,field_type,field_id):
         value = request.response[field_type][field_id]
     value = request.field.value_context(value)
 
-    return json.dumps({'status':200,'value':value,'html':render_template('/survey/fields/'+field_type+'/_field_inline.html',**{'field':request.field.attributes,'is_admin':request.user.is_admin(request.survey),'field_type':field_type,'field_id' : field_id,'value' : value,'survey_key':survey_key,'server_url':settings.server_url })})
+    data = {'status':200,'value':value,'html':render_template('/survey/fields/'+field_type+'/_field_inline.html',**{'field':request.field.attributes,'is_admin':request.user.is_admin(request.survey),'field_type':field_type,'field_id' : field_id,'value' : value,'survey_key':survey_key,'server_url':settings.server_url })}
+
+    if return_data:
+        return data
+
+    return json.dumps(data)
+
+def _view_summary_inline(survey_key,field_type,field_id,return_data = False):
+
+    try:
+        field = request.survey.get_field(field_type,field_id)
+    except AttributeError:
+        abort(403)
+
+    responses = list(Response.collection.find({'survey_key' : survey_key}))
+
+    try:
+        summary = field.aggregate(responses)[field_id]
+    except KeyError:
+        summary = {}
+
+    data = {'status':200,'value':summary,'html':render_template('/survey/fields/'+field_type+'/_summary_inline.html',**{'summary':summary,'field_type':field_type, 'field_id' : field_id,'field':field.attributes,'survey_key':survey_key,'server_url':settings.server_url,'is_admin':request.user.is_admin(request.survey)})}
+
+    if return_data:
+        return data
+
+    return json.dumps(data)
 
 @app.route('/view_summary_inline/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
 @with_session()
@@ -427,7 +509,6 @@ def _view_field_inline(survey_key,field_type,field_id):
 @with_survey()
 @with_admin()
 @with_response()
-@with_field()
 @jsonp()
 @crossdomain(origin='*')
 def view_summary_inline(survey_key,field_type,field_id):
@@ -435,9 +516,7 @@ def view_summary_inline(survey_key,field_type,field_id):
     if not field_type in settings.field_types:
         abort(500)
 
-    summary = generate_summary(request.survey,field_type,field_id)
-    return json.dumps({'status':200,'value':summary,'html':render_template('/survey/fields/'+field_type+'/_summary_inline.html',**{'summary':summary,'field_type':field_type, 'field_id' : field_id,'field':request.field.attributes,'survey_key':survey_key,'server_url':settings.server_url})})
-
+    return _view_summary_inline(survey_key,field_type,field_id)
 
 @app.route('/view_summary/<survey_key>/<field_type>/<field_id>',methods = ['GET'])
 @with_session()
@@ -452,7 +531,12 @@ def view_summary(survey_key,field_type,field_id):
     if not field_type in settings.field_types:
         abort(500)
 
-    summary = generate_summary(request.survey,field_type,field_id)
+    responses = list(Response.collection.find({'survey_key' : survey_key}))
+    try:
+        summary = request.field.aggregate(responses)[field_id]
+    except KeyError:
+        summary = {}
+
     context = {'survey_key' : survey_key,'field':request.field.attributes,'field_type':field_type,'field_id':field_id,'summary':summary}
     response = make_response(render_template("/survey/fields/"+field_type+"/summary.html",**context))
     return response
@@ -469,54 +553,27 @@ def view_field_inline(survey_key,field_type,field_id):
 
 @app.route('/feedback.js',methods = ['GET'])
 @with_session()
-@crossdomain(origin='*')
 def feedback_js():
-    return redirect("/static/feedback.js")
+    return _feedback_js(with_jquery = False)
 
-@app.route('/visits/<survey_key>',methods = ['GET'])
+@app.route('/feedback_with_jquery.js',methods = ['GET'])
 @with_session()
-@crossdomain(origin='*')
-@jsonp()
-def visits(survey_key):
-    visits = request.cookies.get('visits')
-    if not visits:
-        visits = 0
-    else:
-        visits = int(visits)
-    response = make_response(json.dumps({'status':200,'visits':visits}))
-    response.set_cookie('visits',str(visits+1))
+def feedback_with_jquery_js():
+    return _feedback_js(with_jquery = True)
+
+def _feedback_js(with_jquery = False):
+    file_content = "\n".join([f.read() for f in [open(settings.project_path+filename,"r") for filename in (settings.jquery_files if with_jquery else [])+settings.javascript_files ]])
+    response = make_response(file_content)
+    response.mimetype='application/javascript'
     return response
 
-@app.route('/cookie_notice/<survey_key>',methods = ['GET'])
+@app.route('/feedback.css',methods = ['GET'])
 @with_session()
-@with_survey()
-@with_response()
-@crossdomain(origin='*')
-def cookie_notice(survey_key):
-    context = {'response' : request.response,'server_url':settings.server_url}
-    response = make_response(render_template("/survey/cookie_notice.html",**context))
+def feedback_css():
+    file_content = "\n".join([f.read() for f in [open(settings.project_path+filename,"r") for filename in settings.css_files]])
+    response = make_response(file_content)
+    response.mimetype='text/css'
     return response
-
-
-@app.route('/get_response_key/<survey_key>',methods = ['GET'])
-@with_session()
-@with_survey()
-@with_user()
-@with_response()
-@crossdomain(origin='*')
-@jsonp()
-def get_response_key(survey_key):
-    return json.dumps({'status':200,'response_key':request.response['response_key']})
-
-@app.route('/initialize_cookie/<survey_key>',methods = ['GET'])
-@with_session()
-@with_survey()
-@with_response()
-@crossdomain(origin='*')
-def initialize_cookie(survey_key):
-    if not 'redirect_to' in request.args:
-        abort(404)
-    return redirect(request.args['redirect_to'])
 
 if __name__ == '__main__':
     app.run(debug = True,host = '0.0.0.0')

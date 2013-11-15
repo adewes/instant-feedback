@@ -7,19 +7,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="/static/bootstrap/assets/ico/favicon.png">
-    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
     
     <title>{%block title %}{%endblock%}</title>
 
     <!-- Bootstrap core CSS --> 
 
     <script src="/static/bootstrap/assets/js/jquery.js"></script>
+    <script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/js/carousel.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.min.css"/>
     <link href="/static/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-
     <link href="/static/justified_nav.css" rel="stylesheet">
-
-    <link href="/static/feedback.css" rel="stylesheet">
-    <script src="/static/feedback.js"></script>
 
     {%block head_extra %}{%endblock%}
 
@@ -31,7 +29,7 @@
 
 
   </head>
-  <body data-spy="scroll" {%block body_onload%}onload="initialize_elements();"{%endblock%}>
+  <body data-spy="scroll" {%block body_onload%}{%endblock%}>
 
     <div class="container">
 
@@ -62,12 +60,11 @@
 
         <!-- Site footer -->
       <div class="footer">
-        <p style="text-align:center">&copy; Andreas Dewes 2013 // Langbehnstr. 15 // 22761 Hamburg // +49-(0)163-1701-411</p>
+        <p style="text-align:center">&copy; 2013 <a href="http://www.github.com/adewes">Andreas Dewes</a> </p>
         <p style="text-align:center; margin:40px;"><img src="/static/images/german_flag.png" /></p>
-        <p>
-        This site uses <a href="http://en.wikipedia.org/wiki/HTTP_cookie">cookies</a> to identify users. Apart from these cookies we do not store any personal information about our visitors. <br />We do not accept any responsibility for the content of external websites that this website might link to.
+        <p style="color:#888; text-align:center">
+        This site uses <a href="http://en.wikipedia.org/wiki/HTTP_cookie">cookies</a>. Get over it or <a href="http://www.theworldsworstwebsiteever.com/">get out</a>.
         </p>
-        <p class="text-warning">This service is currently in BETA, so use it at your own risk.<br />We do not accept any responsibility or liability for any loss or damage arising from the use of this service.</p>
       </div>
 
     </div>

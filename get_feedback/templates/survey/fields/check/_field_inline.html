@@ -1,6 +1,4 @@
 {%extends '/survey/fields/_base.html' %}
-{% block opening %}<span class="survey_field" id="check_{{field_id}}">{%endblock%}
-{% block closing %}</span>{%endblock%}
 
 {%block main%}
     {%if value == 1 %}<a href="" onclick="update_response('check','{{field_id}}',0);return false;" title="undo check"><i class="{%if 'icon' in field%}icon-{{field.icon}}{%else%}icon-ok{%endif%} green"></i></a>{% else %}<a href="" onclick="update_response('check','{{field_id}}',1);return false;" title="check"><i class="{%if 'icon' in field%}icon-{{field.icon}}{%else%}icon-ok{%endif%}"></i></a>

@@ -2,6 +2,8 @@
 {% block title %}Survey{% endblock %}
 
 {%block head_extra %}
+<script src="/feedback.js"></script>
+
 <script>
 var survey_key = 'feedback_welcome';
 </script>
@@ -12,16 +14,17 @@ var survey_key = 'feedback_welcome';
       <!-- Jumbotron -->
       <div class="jumbotron" id="welcome">
         <h1>Get feedback.</h1>
-        <p>Integrate simple, non-obstrusive feedback elements directly into your website and collect valuable feedback from your visitors. Get started in minutes, no signup required!</p>
+        <p>Integrate simple, non-obstrusive feedback elements directly into your website and collect valuable feedback from your visitors. Get started in minutes, no signup required.</p>
       </div>
+
       <div class="features">
         <h1>Features</h1>
 
           <div class="row widget">
             <div class="col-md-12">
-                <h2><i class="icon-heart" style="color:#fa0"></i> Beautiful, intuitive widgets.</h2>
+                <h2><i class="icon-heart" style="color:#fa0"></i> Simple, intuitive widgets.</h2>
                 <p class="lead">
-                    Integrate <strong>five</strong> different types of feedback elements into your website. All of them are unobstrusive and integrate perfectly with the design of your website. User input is processed on-the-fly, no form submitting required.
+                    Integrate <strong>five</strong> different types of feedback elements into your site. All of them are unobstrusive and integrate perfectly with the design of your site. User input is processed on-the-fly, no form submitting required.
                 </p>
                 <table class="table table-striped" style="font-size:1.4em">
                     <thead>
@@ -76,9 +79,9 @@ var survey_key = 'feedback_welcome';
 
           <div class="row widget">
             <div class="col-md-12">
-                <h2><i class="icon-bar-chart" style="color:#66f"></i> Inline editing &amp; results summary.</h2>
+                <h2><i class="icon-bar-chart" style="color:#66f"></i> Inline editing &amp; results.</h2>
                 <p>
-                    When your survey is running, you can edit elements directly from the website in which they're integrated. Likewise, you can also get a result summary for each element. Simple &amp; direct.
+                    When your survey is running, you can edit elements directly on the website in which they're integrated. Likewise, you can also get a result summary for each element. Simple &amp; direct.
                 </p>
                 <p class="feedback">
                     <span class="survey_rate" id="features_view_results_online"></span>
@@ -88,9 +91,9 @@ var survey_key = 'feedback_welcome';
 
           <div class="row widget">
             <div class="col-md-12">
-                <h2><i class="icon-eye-close" style="color:#66f"></i> Respects the privacy of you and your visitors.</h2>
+                <h2><i class="icon-eye-close" style="color:#66f"></i> Respects your visitors.</h2>
                 <p>
-                    Respecting your privacy and ensuring data security is of utmost importance to us. We do not record any personal information about your visitors and only store the feedback they provide you with. We operate our business under the <strong>German Federal Data Protection Act</strong> (Bundesdatenschutzgesetz), one of the strictest data protection laws in the world.
+                    We do not record or log any personal information about your visitors and only store the feedback they provide you with.
                 </p>
                 <p class="feedback">
                     <span class="survey_rate" id="features_view_results_online"></span>
@@ -100,9 +103,9 @@ var survey_key = 'feedback_welcome';
 
           <div class="row widget">
             <div class="col-md-12">
-                <h2><i class="icon-ok" style="color:#f6f"></i> Compatible with all modern browsers.</h2>
+                <h2><i class="icon-ok" style="color:#f6f"></i> Compatible with all browsers.</h2>
                 <p>
-                    The survey elements are compatible with most modern browsers like Firefox, Chrome, Safari and even Internet Explorer (>=IE8).<br /> If you nevertheless encouter any problems when using this tool, please let us know and we'll do our best to help you:
+                    The survey elements are compatible with all modern browsers like Firefox, Chrome, Safari and even Internet Explorer (>=IE8).<br /> If you should encouter any problems when using this tool, please let me know and I'll do my best to help you:
 		</p>
 		<table style="font-size:1.4em" class="table table-striped">
 		<tr>
@@ -125,28 +128,28 @@ var survey_key = 'feedback_welcome';
             <div class="col-md-12">
                 <h2><i class="icon-question-sign" style="color:#ff6"></i> Any feedback?</h2>
                 <p>
-                    Of course we would totally love to get your feedback on our product, so feel free to provide us with your opinion:
+                    Of course I'd totally love to get your feedback on my tool:
                 </p>
 
                     <table class="table table-striped" style="font-size:1.4em">
                         <tr>
-                            <td style="text-align:right">Do you like what we are offering?</td>
+                            <td style="text-align:right">Do you like the idea of this?</td>
                             <td><span class="survey_vote" id="product_like"></span></td>
                         </tr>
                         <tr>
-                            <td style="text-align:right">Would you consider using it on your own website?</td>
+                            <td style="text-align:right">Would you use it on your own website?</td>
                             <td><span class="survey_vote" id="product_use_on_own_website"></span></td>
                         </tr>
                         <tr>
-                            <td style="text-align:right">Would you consider paying for this product?</td>
-                            <td><span class="survey_vote" id="product_will_pay_for_it"></span></td>
+                            <td style="text-align:right">Would you like me to open-source this?</td>
+                            <td><span class="survey_vote" id="product_open_source"></span></td>
                         </tr>
-                        <tr>
-                            <td style="text-align:right">How much do you like the design of this website?</td>
+                        <tr>    
+                            <td style="text-align:right">How much do you like the user interface?</td>
                             <td><span class="survey_rate" id="product_website_design"></span></td>
                         </tr>
                         <tr>
-                            <td style="text-align:right">Anything we can improve?</td>
+                            <td style="text-align:right">Anything I can improve?</td>
                             <td><span class="survey_input" id="product_improve"></span></td>
                         </tr>
                         <tr>
@@ -154,7 +157,7 @@ var survey_key = 'feedback_welcome';
                             <td><span class="survey_select" id="product_source"></span></td>
                         </tr>
                         <tr>
-                            <td style="text-align:right">Anything else you wanna tell us?</td>
+                            <td style="text-align:right">Anything else you wanna tell me?</td>
                             <td><span class="survey_input" id="product_input"></span></td>
                         </tr>
                     </table>

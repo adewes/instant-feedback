@@ -7,7 +7,7 @@
       <div class="row widget">
         <div class="col-md-12">
             <h2>Survey Details - {{survey.name}}</h2>
-            <a href="/export_responses/{{survey.key}}">export results as JSON</a> // <a href="/summary/{{survey.key}}">summary</a> // <a href="/fields/{{survey.key}}">fields</a>  // <a href="/delete/{{survey.key}}"><i class="icon-trash"></i> delete</a>
+            <a href="/export_responses/{{survey.key}}">export results as JSON</a> // <a href="/summary/{{survey.key}}">fields</a>  // <a href="/delete/{{survey.key}}"><i class="icon-trash"></i> delete</a>
             <table class="table table-responsive table-striped table-bordered">
             <thead>
             <tr>
@@ -73,13 +73,13 @@
         <h1>How to use the survey</h1>
         <h3><i class="icon-paste"></i> Copy &amp; Paste Code</h3>
         <p>Just take the following code and put it into the <strong>HEAD</strong> section of your HTML file:</p>
-        <pre><code>&lt;link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"&gt;
-&lt;script src="http://code.jquery.com/jquery-1.10.1.min.js">&lt;/script&gt;
-&lt;link href="{{server_url}}/static/feedback.css" rel="stylesheet"&gt;
-&lt;script src="{{server_url}}/feedback.js"&gt;&lt;/script&gt;
+        <pre><code>&lt;script src="{{server_url}}/feedback.js"&gt;&lt;/script&gt;
+
 &lt;script type="text/javascript"&gt;
 var survey_key = '{{survey.key}}';
-&lt;/script&gt;</code></pre>
+&lt;/script&gt;</code></pre>Please make sure that you also have jQuery up and running before loading <i>feedback.js</i>. If not, include this script tag in addition:
+<pre><code>&lt;script src="http://code.jquery.com/jquery-1.10.1.min.js">&lt;/script&gt;</code></pre>
+
 
         <h3><i class="icon-edit"></i> Add feedback elements</h3>
         <p>
@@ -121,7 +121,7 @@ var survey_key = '{{survey.key}}';
         </table>
 
         </p>
-        <h3><i class="icon-ok"></i> Open the survey as admin</h3>
+        <h3><i class="icon-ok"></i> Open the survey website while logged in</h3>
         <p>
         To initialize and activate the feedback elements, you need to visit the website in which they are embedded once while being logged in as survey admin.
         </p>
@@ -136,11 +136,6 @@ var survey_key = '{{survey.key}}';
         <div class="col-md-12">
         <h2>Advanced Topics</h2>
         
-        <h3>Initialization</h3>
-
-        <p>
-        <span class="code">feedback.js</span> will call a function called <span class="code">initialize_elements()</span> when the body of your document gets loaded. So, if you overwrite the <span class="code">onload</span> function of the <span class="code">body</span> element, make sure to call <span class="code">initialize_elements()</span> by hand.
-        </p>
 
         <h3><a name="access_management">Access Management</a></h3>
 
