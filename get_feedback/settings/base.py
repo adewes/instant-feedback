@@ -30,5 +30,5 @@ field_types = {
     'select':fields.Select,
 }
 
-javascript_files = ["/static/feedback.js"]
-css_files = ["/static/feedback.css"]
+javascript_files = ["/static/feedback.js","/static/fancybox/source/jquery.fancybox.js"]
+css_files = ["/static/feedback.css","/static/font-awesome/css/font-awesome.min.css","/static/fancybox/source/jquery.fancybox.css"]

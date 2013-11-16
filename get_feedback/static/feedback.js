@@ -16,7 +16,6 @@ $(document).ready(function() {
         window.onmessage = handle_message;
         if (survey_key)
         {
-            initialize_files();
             initialize_survey();
             $('body').mousemove(track_mouse);
         }
@@ -112,27 +111,6 @@ function get_element_for_field(field_type,field_id)
     if (element.length)
         element.addClass("survey_field");
     return element;
-}
-
-function add_css(filename)
-{
-    var cssLink = $("<link rel='stylesheet' type='text/css' href='"+survey_server_url+filename+"'>");
-    $('head').append(cssLink);
-}
-
-function add_javascript(filename)
-{
-    var jsLink = $("<script src='"+survey_server_url+filename+"'></script>");
-    $('head').append(jsLink);
-
-}
-
-function initialize_files()
-{
-    add_javascript('/static/fancybox/source/jquery.fancybox.pack.js');
-    add_css('/feedback.css');
-    add_css('/static/fancybox/source/jquery.fancybox.css');
-    add_css('/static/font-awesome/css/font-awesome.min.css');
 }
 
 function autodiscover_fields(known_fields)

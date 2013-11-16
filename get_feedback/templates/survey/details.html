@@ -74,8 +74,10 @@
         <h3><i class="icon-paste"></i> Copy &amp; Paste Code</h3>
         <p>Just take the following code and put it into the <strong>HEAD</strong> section of your HTML file:</p>
         <pre><code>&lt;script src="{{server_url}}/feedback.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" type="text/css" href="{{server_url}}/feedback.css"/&gt;
 
 &lt;script type="text/javascript"&gt;
+var survey_server_url = '{{server_url}}';
 var survey_key = '{{survey.key}}';
 &lt;/script&gt;</code></pre>Please make sure that you also have jQuery up and running before loading <i>feedback.js</i>. If not, include this script tag in addition:
 <pre><code>&lt;script src="http://code.jquery.com/jquery-1.10.1.min.js">&lt;/script&gt;</code></pre>
