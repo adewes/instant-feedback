@@ -1,0 +1,5 @@
+<FilesMatch "\.(ttf|ttc|otf|eot|woff|font.css)$">
+#  <IfModule mod_headers.so>
+    Header set Access-Control-Allow-Origin "*"
+#  </IfModule>
+</FilesMatch>
