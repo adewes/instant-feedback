@@ -113,8 +113,9 @@ function get_element_for_field(field_type,field_id)
     return element;
 }
 
-function autodiscover_fields(known_fields)
+function autodiscover_fields()
 {
+    var discovered_fields = []
     for(var i=0;i<field_types.length;i++)
     {
         var field_type = field_types[i];
@@ -123,12 +124,10 @@ function autodiscover_fields(known_fields)
         {
             var field = $(fields[j]);
             var field_id = field.attr('id');
-            if (known_fields.indexOf(field_id) == -1)
-            {
-                initialize_field(field,field_type,field_id)
-            }
+            discovered_fields.push([field_type,field_id]);
         }  
     }
+    return discovered_fields;
 }
 
 function initialize_survey()
@@ -144,13 +143,14 @@ function initialize_survey()
     closeEffect : 'none'
     });
 
+    var discovered_fields = autodiscover_fields();
+
     var jqxhr = $.ajax({
     url:survey_server_url+(show_summary ? '/initialize_survey/' : '/initialize_survey/')+survey_key+'?show_summary='+(show_summary ? '1' : '')+(response_key ? '&response_key='+response_key: ''),
-    data:{'url':survey_url},
+    data:{'url':survey_url,'fields' : JSON.stringify(discovered_fields)},
     cache: false,
     xhrFields: {withCredentials: true},
-    type:'GET',
-    dataType: 'jsonp',
+    type:'POST',
     success:
     function(data) {
                 if (data['status'] = 200)
@@ -173,7 +173,6 @@ function initialize_survey()
                     }
                     if (data['survey_parameters']['admin'])
                     {
-                        autodiscover_fields(known_ids);
                         if (show_menu)
                             initialize_menu();
                     }
@@ -211,26 +210,6 @@ function initialize_menu()
     $('html').css('position','absolute');
     $('html').css('width','100%');
     $('html').css('top',($('#survey_menu').height())+'px');
-}
-
-function initialize_field(field,field_type,field_id)
-{
-    var jqxhr = $.ajax({
-    url:survey_server_url+(show_summary ? '/view_summary_inline/' : '/view_field_inline/')+survey_key+'/'+field_type+'/'+field_id+(response_key ? '?response_key='+response_key: ''),
-    data:{},
-    cache: false,
-    xhrFields: {withCredentials: true},
-    type:'GET',
-    dataType: 'jsonp',
-    success:
-    function(data) {
-                if (data['status'] = 200)
-                {
-                    field.html(data['html']);
-                    field = get_element_for_field(field_type,field_id)
-               }
-            }    
-        })
 }
 
 function reload_field(field_type,field_id)

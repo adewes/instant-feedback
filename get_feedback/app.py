@@ -88,12 +88,11 @@ def new_field(survey_key):
     response = make_response(render_template("survey/new_field.html",**context))
     return response
 
-@app.route('/initialize_survey/<survey_key>',methods = ['GET'])
+@app.route('/initialize_survey/<survey_key>',methods = ['GET','POST'])
 @with_session()
 @with_user()
 @with_survey()
 @with_response()
-@jsonp()
 def initialize_survey(survey_key):
     if 'show_summary' in request.args and request.args['show_summary']:
         if not request.user.is_admin(request.survey):
@@ -101,9 +100,24 @@ def initialize_survey(survey_key):
         view_function = _view_summary_inline
     else:
         view_function = _view_field_inline
+
     if not 'fields' in request.survey:
         abort(404)
+    try:
+        discovered_fields = json.loads(request.form['fields'])
+    except:
+        abort(404)
+
+    fields = request.survey['fields']
+
+    if request.user.is_admin(request.survey):
+        for field_type,field_id in discovered_fields:
+            if not field_type in fields or not field_id in fields[field_type]:
+                field = request.survey.init_field(field_type,field_id)
+                request.survey.save()
+
     fields_with_html = request.survey['fields'].copy()
+
     for field_type in fields_with_html:
         for field_id in fields_with_html[field_type]:
             field = fields_with_html[field_type][field_id]
