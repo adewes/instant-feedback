@@ -7,6 +7,7 @@ import pymongo
 import settings
 from settings import logger
 import uuid
+import urlparse
 
 from werkzeug.routing import BaseConverter
 class RegexConverter(BaseConverter):
@@ -23,12 +24,12 @@ def request_wants_json():
 
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
-                automatic_options=True):
+                automatic_options=True,auto_origin = False):
     if methods is not None:
         methods = ', '.join(sorted(x.upper() for x in methods))
     if headers is not None and not isinstance(headers, basestring):
         headers = ', '.join(x.upper() for x in headers)
-    if not isinstance(origin, basestring):
+    if not isinstance(origin, basestring) and not auto_origin:
         origin = ', '.join(origin)
     if isinstance(max_age, timedelta):
         max_age = max_age.total_seconds()
@@ -51,7 +52,14 @@ def crossdomain(origin=None, methods=None, headers=None,
 
             h = resp.headers
 
-            h['Access-Control-Allow-Origin'] = origin
+            if auto_origin:
+                if not 'Referer' in request.headers:
+                    abort(404)
+                o = urlparse.urlparse(request.headers['Referer'])
+                origin_str = o.scheme+'://'+o.hostname+(':'+str(o.port) if o.port else '')
+            else:
+                origin_str = origin
+            h['Access-Control-Allow-Origin'] = origin_str 
             h['Access-Control-Allow-Credentials'] = 'true'
             h['Access-Control-Allow-Methods'] = get_methods()
             h['Access-Control-Max-Age'] = str(max_age)

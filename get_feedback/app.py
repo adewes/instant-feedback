@@ -88,13 +88,14 @@ def new_field(survey_key):
     response = make_response(render_template("survey/new_field.html",**context))
     return response
 
-@app.route('/initialize_survey/<survey_key>',methods = ['GET','POST'])
+@app.route('/initialize_survey/<survey_key>',methods = ['POST'])
 @with_session()
 @with_user()
 @with_survey()
 @with_response()
-@crossdomain(origin='*')
+@crossdomain(auto_origin = True,methods = ['POST'])
 def initialize_survey(survey_key):
+
     if 'show_summary' in request.args and request.args['show_summary']:
         if not request.user.is_admin(request.survey):
             abort(403)
@@ -104,18 +105,8 @@ def initialize_survey(survey_key):
 
     if not 'fields' in request.survey:
         abort(404)
-    try:
-        discovered_fields = json.loads(request.form['fields'])
-    except:
-        abort(404)
 
     fields = request.survey['fields']
-
-    if request.user.is_admin(request.survey):
-        for field_type,field_id in discovered_fields:
-            if not field_type in fields or not field_id in fields[field_type]:
-                field = request.survey.init_field(field_type,field_id)
-                request.survey.save()
 
     fields_with_html = request.survey['fields'].copy()
 
@@ -134,6 +125,48 @@ def initialize_survey(survey_key):
     survey_parameters = {
                         'response_key' : request.response['response_key'],
                         'fields' : fields_with_html,
+                        'admin' : True if request.user.is_admin(request.survey) else False,
+                        }
+
+    response = make_response(json.dumps({'status':200, 'survey_parameters':survey_parameters}))
+    response.mimetype='text/json'
+    return response
+
+@app.route('/autocreate_fields/<survey_key>',methods = ['POST'])
+@with_session()
+@with_user()
+@with_survey()
+@with_admin()
+@with_response()
+@crossdomain(methods = ['POST'],auto_origin = True)
+def autocreate_fields(survey_key):
+
+    if 'show_summary' in request.args and request.args['show_summary']:
+        view_function = _view_summary_inline
+    else:
+        view_function = _view_field_inline
+
+    if not 'fields' in request.survey:
+        abort(404)
+    try:
+        new_fields = json.loads(request.form['fields'])
+    except:
+        abort(404)
+
+    fields = {}
+
+    for field_type,field_id in new_fields:
+        if not field_type in fields:
+            fields[field_type] = {}
+        content = view_function(request.survey['key'],field_type,field_id,return_data = True)
+        if content['status'] == 200:
+            fields[field_type][field_id] = {}
+            fields[field_type][field_id]['html'] = content['html']
+            fields[field_type][field_id]['value'] = content['value']
+
+    survey_parameters = {
+                        'response_key' : request.response['response_key'],
+                        'fields' : fields,
                         'admin' : True if request.user.is_admin(request.survey) else False,
                         }
 

@@ -17,7 +17,6 @@ $(document).ready(function() {
         if (survey_key)
         {
             initialize_survey();
-            $('body').mousemove(track_mouse);
         }
         }); 
 
@@ -25,11 +24,6 @@ function handle_message(e)
 {
     e = e || window.event;
     var data = eval(JSON.parse(e.data));
-    if (data['type'] == 'delete_field')
-    {
-        $.fancybox.close();
-        delete_field(data['field_type'],data['field_id'])
-    }
     if (data['type'] == 'reload_field')
     {
         $.fancybox.close();
@@ -51,16 +45,6 @@ function handle_message(e)
     }
 }
 
-function get_element_for_path(path)
-{
-    var current_element = $('html');
-    for(var i=path.length-1;i>=0;i--)
-    {
-        current_element = $(current_element.children()[path[i]['position']]);
-    }
-    return current_element;
-}
-
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -69,41 +53,6 @@ function getParameterByName(name) {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function get_element_path(element)
-{
-    var parents = element.parents();
-    var current_element = element;
-    var path = [];
-    for(var i =0;i<parents.length;i++)
-    {
-        var attrs = {
-            'tag' : current_element.get(0).tagName,
-            'position' : current_element.parent().children().index(current_element.get(0)),
-            'class' : current_element.attr('class'),
-            'id' : current_element.attr('id')
-        };
-        path.push(attrs);
-        current_element = $(parents[i]);
-    }
-    return {'content':element.html(),'path':path};
-}
-
-function open_new_field_dialog()
-{
-    var survey_overlay = $('#survey_overlay');    
-    var selected_element = $(survey_overlay.parent());
-
-    select_element = false;
-    $('#survey_overlay').remove();
-
-    selected_element_path = get_element_path(selected_element);
-
-    $('body').fancybox({
-            'type' : 'iframe',
-            'href' : survey_server_url+'/new_field/'+survey_key,
-        }
-    ).click();
-}
 
 function get_element_for_field(field_type,field_id)
 {
@@ -130,6 +79,43 @@ function autodiscover_fields()
     return discovered_fields;
 }
 
+function initialize_fields(fields)
+{
+    var known_fields = [];
+    for(var field_type in fields)
+    {
+        for(var field_id in fields[field_type])
+        {
+            var field = fields[field_type][field_id];
+            known_fields.push([field_type,field_id]);
+            element = get_element_for_field(field_type,field_id)
+            if (element != undefined)
+            {
+                element.html(field['html']);
+            }
+        }
+    }
+    return known_fields;
+}
+
+function autocreate_fields(fields)
+{
+    var jqxhr = $.ajax({
+    url:survey_server_url+'/autocreate_fields/'+survey_key+'?show_summary='+(show_summary ? '1' : '')+(response_key ? '&response_key='+response_key: ''),
+    cache: false,
+    data : {'fields':JSON.stringify(fields)},
+    xhrFields: {withCredentials: true},
+    type:'POST',
+    success:function(data) {
+            if (data['status'] = 200)
+            {
+                var fields = data['survey_parameters']['fields'];
+                initialize_fields(fields);
+            }
+        }    
+    })
+}
+
 function initialize_survey()
 {
 
@@ -146,56 +132,34 @@ function initialize_survey()
     var discovered_fields = autodiscover_fields();
 
     var jqxhr = $.ajax({
-    url:survey_server_url+(show_summary ? '/initialize_survey/' : '/initialize_survey/')+survey_key+'?show_summary='+(show_summary ? '1' : '')+(response_key ? '&response_key='+response_key: ''),
-    data:{'url':survey_url,'fields' : JSON.stringify(discovered_fields)},
+    url:survey_server_url+'/initialize_survey/'+survey_key+'?show_summary='+(show_summary ? '1' : '')+(response_key ? '&response_key='+response_key: ''),
     cache: false,
     xhrFields: {withCredentials: true},
     type:'POST',
-    success:
-    function(data) {
-                if (data['status'] = 200)
+    success:function(data) {
+            if (data['status'] = 200)
+            {
+                var fields = data['survey_parameters']['fields'];
+                response_key = data['survey_parameters']['response_key'];
+                known_fields = initialize_fields(fields);
+                if (data['survey_parameters']['admin'])
                 {
-                    var fields = data['survey_parameters']['fields'];
-                    response_key = data['survey_parameters']['response_key'];
-                    var known_ids = []
-                    for(var field_type in fields)
+                    var new_fields = [];
+                    for(var i in discovered_fields)
                     {
-                        for(var field_id in fields[field_type])
-                        {
-                            var field = fields[field_type][field_id];
-                            element = get_element_for_field(field_type,field_id)
-                            if (element != undefined)
-                            {
-                                known_ids.push(field_id);
-                                element.html(field['html']);
-                            }
-                        }
+                        if (known_fields.indexOf(discovered_fields[i]) == -1)
+                            new_fields.push(discovered_fields[i]);
                     }
-                    if (data['survey_parameters']['admin'])
+                    if (new_fields.length)
                     {
-                        if (show_menu)
-                            initialize_menu();
+                        autocreate_fields(new_fields);
                     }
+                    if (show_menu)
+                        initialize_menu();
                 }
+            }
             }    
         })   
-}
-
-function track_mouse(e)
-{
-    var x = event.clientX, y = event.clientY;
-
-    if (!select_element)
-        return false;
-
-    $('#survey_overlay').remove();
-
-    var selected_element = $(document.elementFromPoint(x, y));
-    selected_element.prepend('<a id="survey_overlay" href="" onclick="open_new_field_dialog();return false;"></a>');
-    var survey_overlay = $('#survey_overlay');    
-    survey_overlay.offset(selected_element.offset());
-    survey_overlay.width(selected_element.outerWidth());
-    survey_overlay.height(selected_element.outerHeight());
 }
 
 function initialize_menu()
@@ -230,12 +194,6 @@ function reload_field(field_type,field_id)
             }
         }          
     })
-}
-
-function delete_field(field_type,field_id)
-{
-    var element = get_element_for_field(field_type,field_id,{});
-    element.remove();
 }
 
 function update_response(field_type,field_id,value)
