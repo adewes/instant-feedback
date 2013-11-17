@@ -93,6 +93,7 @@ def new_field(survey_key):
 @with_user()
 @with_survey()
 @with_response()
+@crossdomain(origin='*')
 def initialize_survey(survey_key):
     if 'show_summary' in request.args and request.args['show_summary']:
         if not request.user.is_admin(request.survey):
