@@ -20,7 +20,7 @@ Running the development server
 ------------------------------
 
 ```bash
-cd get_feedback.py
+cd get_feedback
 python app.py
 ```
 
